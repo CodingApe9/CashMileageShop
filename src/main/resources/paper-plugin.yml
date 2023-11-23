@@ -1,0 +1,4 @@
+name: CashMileageShop
+version: '${version}'
+main: org.codingape9.cashmileageshop.CashMileageShop
+api-version: '1.19'
