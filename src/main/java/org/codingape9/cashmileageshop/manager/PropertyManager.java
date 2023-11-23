@@ -1,4 +1,4 @@
-package org.codingape9.cashmileageshop.mapper;
+package org.codingape9.cashmileageshop.manager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
