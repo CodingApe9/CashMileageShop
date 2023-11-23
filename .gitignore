@@ -1,4 +1,5 @@
 build.gradle
+.gradle/*
 
 # User-specific stuff
 .idea/
