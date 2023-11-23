@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id "com.github.johnrengelman.shadow" version "8.1.1"
 }
 
 group = 'org.codingApe9'
@@ -18,7 +19,9 @@ repositories {
 }
 
 dependencies {
-compileOnly "io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT"
+    compileOnly "io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT"
+    implementation 'org.mybatis:mybatis:3.5.14'
+    implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.1'
 }
 
 def targetJavaVersion = 17
@@ -41,7 +44,16 @@ processResources {
     def props = [version: version]
     inputs.properties props
     filteringCharset 'UTF-8'
-    filesMatching('paper-plugin.yml') {
+    filesMatching('plugin.yml') {
         expand props
     }
+}
+
+jar {
+    destinationDirectory.set(file("C:\\paper\\plugins"))
+}
+
+shadowJar {
+    archiveFileName = 'CashMileageShop.jar'
+    destinationDirectory = file("C:\\paper\\plugins")
 }
