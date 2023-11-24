@@ -4,6 +4,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.codingape9.cashmileageshop.CashMileageShop;
 import org.codingape9.cashmileageshop.gui.ShopGui;
+import org.codingape9.cashmileageshop.util.ConfigLoader;
 import org.codingape9.cashmileageshop.view.PlayerMessage;
 import org.codingape9.cashmileageshop.view.ServerConsole;
 
@@ -44,7 +45,7 @@ public class PropertyManager {
         hasProperty(CUSTOM_ITEM_INFO_SECTION_NAME, CUSTOM_ITEM_INFO_SECTION_NAME_MAP);
 
         File configFile = new File(CashMileageShop.pluginFolder, CONFIG_FILE_NAME);
-        YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
+        YamlConfiguration config = ConfigLoader.loadConfig(configFile);
         ConfigurationSection customItemInfoConfig = config.getConfigurationSection(CUSTOM_ITEM_INFO_SECTION_NAME);
 
         ShopGui.PRICE = customItemInfoConfig.getString("price");
@@ -56,7 +57,7 @@ public class PropertyManager {
         hasProperty(SERVER_CUSTOM_MESSAGE_SECTION_NAME, SERVER_CUSTOM_MESSAGE_SECTION_MAP);
 
         File configFile = new File(CashMileageShop.pluginFolder, CONFIG_FILE_NAME);
-        YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
+        YamlConfiguration config = ConfigLoader.loadConfig(configFile);
         ConfigurationSection customItemInfoConfig = config.getConfigurationSection(SERVER_CUSTOM_MESSAGE_SECTION_NAME);
 
         ServerConsole.SERVER_ERROR_MESSAGE_HEADER = customItemInfoConfig.getString("ServerErrorMessageHeader");
@@ -67,7 +68,7 @@ public class PropertyManager {
         hasProperty(PLAYER_CUSTOM_MESSAGE_SECTION_NAME, PLAYER_CUSTOM_MESSAGE_SECTION_MAP);
 
         File configFile = new File(CashMileageShop.pluginFolder, CONFIG_FILE_NAME);
-        YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
+        YamlConfiguration config = ConfigLoader.loadConfig(configFile);
         ConfigurationSection customItemInfoConfig = config.getConfigurationSection(PLAYER_CUSTOM_MESSAGE_SECTION_NAME);
 
         PlayerMessage.PLAYER_ERROR_MESSAGE_HEADER = customItemInfoConfig.getString("sendFailMessageHeader");
@@ -79,7 +80,7 @@ public class PropertyManager {
             Map<String, String> defaultProperties
     ) {
         File configFile = new File(CashMileageShop.pluginFolder, CONFIG_FILE_NAME);
-        YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
+        YamlConfiguration config = ConfigLoader.loadConfig(configFile);
         ConfigurationSection customItemInfoConfig = config.getConfigurationSection(propertyName);
 
         if (customItemInfoConfig == null) {
