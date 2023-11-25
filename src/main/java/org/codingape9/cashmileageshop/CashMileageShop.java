@@ -17,9 +17,7 @@ public final class CashMileageShop extends JavaPlugin {
         createPluginFolder();
 
         PropertyManager propertyManager = PropertyManager.getInstance();
-        propertyManager.getCustomItemInfoProperty();
-        propertyManager.getServerCustomMessageProperty();
-        propertyManager.getUserCustomMessageProperty();
+        propertyManager.loadProperties();
 
 //        getServer().getPluginManager().registerEvent();
 
