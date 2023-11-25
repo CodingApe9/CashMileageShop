@@ -1,5 +1,6 @@
 package org.codingape9.cashmileageshop;
 
+import org.bukkit.Server;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.codingape9.cashmileageshop.manager.PropertyManager;
 import org.codingape9.cashmileageshop.view.ServerConsole;
@@ -19,6 +20,8 @@ public final class CashMileageShop extends JavaPlugin {
         propertyManager.getCustomItemInfoProperty();
         propertyManager.getServerCustomMessageProperty();
         propertyManager.getUserCustomMessageProperty();
+
+//        getServer().getPluginManager().registerEvent();
 
         ServerConsole.sendSuccessMessage(PLUGIN_ON);
     }
