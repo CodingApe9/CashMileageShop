@@ -3,6 +3,7 @@ package org.codingape9.cashmileageshop.manager;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.codingape9.cashmileageshop.mapper.ItemMapper;
 import org.codingape9.cashmileageshop.mapper.UserMapper;
 
 import java.io.File;
@@ -26,6 +27,7 @@ public class MyBatisManager {
 
         sessionFactory = new SqlSessionFactoryBuilder().build(fileReader);
         sessionFactory.getConfiguration().addMapper(UserMapper.class);
+        sessionFactory.getConfiguration().addMapper(ItemMapper.class);
     }
 
     public SqlSession getSession() {
