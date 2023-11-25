@@ -20,7 +20,7 @@ public class PropertyManager {
     private static final String NO_SECTION_EXCEPTION_MESSAGE = "%s 파일에 %s 섹션을 작성해주세요.";
 
     private static final String CUSTOM_ITEM_INFO_SECTION_NAME = "custom_item_info";
-    private static final Map<String, String> CUSTOM_ITEM_INFO_SECTION_NAME_MAP = Map.of("price", "§f가격: §e%price% §f캐시",
+    private static final Map<String, String> CUSTOM_ITEM_INFO_SECTION_MAP = Map.of("price", "§f가격: §e%price% §f캐시",
             "server_limited", "§f서버 한정: §e%server_remain%/%server_purchases_limited%",
             "user_limited", "§f개인 한정: §e%user_remain%/%user_purchases_limited%");
 
@@ -44,7 +44,7 @@ public class PropertyManager {
 
 
     public void loadProperties() {
-        loadProperty(CUSTOM_ITEM_INFO_SECTION_NAME, CUSTOM_ITEM_INFO_SECTION_NAME_MAP, this::assignCustomItemInfo);
+        loadProperty(CUSTOM_ITEM_INFO_SECTION_NAME, CUSTOM_ITEM_INFO_SECTION_MAP, this::assignCustomItemInfo);
         loadProperty(SERVER_CUSTOM_MESSAGE_SECTION_NAME, SERVER_CUSTOM_MESSAGE_SECTION_MAP, this::assignServerCustomMessage);
         loadProperty(PLAYER_CUSTOM_MESSAGE_SECTION_NAME, PLAYER_CUSTOM_MESSAGE_SECTION_MAP, this::assignPlayerCustomMessage);
     }
