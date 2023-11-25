@@ -1,6 +1,5 @@
 package org.codingape9.cashmileageshop.manager;
 
-import java.util.function.Consumer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.codingape9.cashmileageshop.CashMileageShop;
@@ -12,6 +11,7 @@ import org.codingape9.cashmileageshop.view.ServerConsole;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class PropertyManager {
     private static PropertyManager propertyManager;
@@ -51,7 +51,7 @@ public class PropertyManager {
 
     private void loadProperty(String sectionName, Map<String, String> defaultValues, Consumer<ConfigurationSection> assignFunction) {
         hasProperty(sectionName, defaultValues);
-        File configFile = new File(CashMileageShop.pluginFolder, CONFIG_FILE_NAME);
+        File configFile = new File(CashMileageShop.PLUGIN_FOLDER, CONFIG_FILE_NAME);
         YamlConfiguration config = ConfigLoader.loadConfig(configFile);
         ConfigurationSection section = config.getConfigurationSection(sectionName);
         assignFunction.accept(section);
@@ -77,7 +77,7 @@ public class PropertyManager {
             String propertyName,
             Map<String, String> defaultProperties
     ) {
-        File configFile = new File(CashMileageShop.pluginFolder, CONFIG_FILE_NAME);
+        File configFile = new File(CashMileageShop.PLUGIN_FOLDER, CONFIG_FILE_NAME);
         YamlConfiguration config = ConfigLoader.loadConfig(configFile);
         ConfigurationSection customItemInfoConfig = config.getConfigurationSection(propertyName);
 

@@ -3,8 +3,10 @@ package org.codingape9.cashmileageshop.repository;
 
 import org.apache.ibatis.session.SqlSession;
 import org.codingape9.cashmileageshop.dto.UserDto;
-import org.codingape9.cashmileageshop.mapper.UserMapper;
 import org.codingape9.cashmileageshop.manager.MyBatisManager;
+import org.codingape9.cashmileageshop.mapper.UserMapper;
+
+import java.util.UUID;
 
 public class UserRepository {
 
@@ -14,33 +16,23 @@ public class UserRepository {
         this.sqlSessionFactory = sqlSessionFactory;
     }
 
-    public UserDto getUser(String uuid) {
+    public UserDto selectUser(UUID uuid) {
         UserDto userDto;
         try (SqlSession session = sqlSessionFactory.getSession()) {
             UserMapper mapper = session.getMapper(UserMapper.class);
-            userDto = mapper.selectUser(uuid);
+            userDto = mapper.selectUser(uuid.toString());
         }
 
         return userDto;
     }
 
-    //    public int save(ObtUserdataDTO dto) {
-//        int affectedRow = 0;
-//        try (SqlSession session = sqlSessionFactory.getSession()) {
-//            ObtUserDataMapper mapper = session.getMapper(ObtUserDataMapper.class);
-//            affectedRow = mapper.save(dto);
-//        }
-//
-//        return affectedRow;
-//    }
-//
-//    public int update(ObtUserdataDTO dto) {
-//        int affectedRow = 0;
-//        try (SqlSession session = sqlSessionFactory.getSession()) {
-//            ObtUserDataMapper mapper = session.getMapper(ObtUserDataMapper.class);
-//            affectedRow = mapper.update(dto);
-//        }
-//
-//        return affectedRow;
-//    }
+    public int insertUser(UserDto userDto) {
+        int insertRowCount;
+        try (SqlSession session = sqlSessionFactory.getSession()) {
+            UserMapper mapper = session.getMapper(UserMapper.class);
+            insertRowCount = mapper.insertUser(userDto);
+        }
+
+        return insertRowCount;
+    }
 }
