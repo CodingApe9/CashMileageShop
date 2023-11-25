@@ -17,12 +17,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class ItemRegisterCommand implements CommandExecutor, TabCompleter {
-    private static final String NO_ITEM_NAME = "아이템 이름을 입력해주세요.";
-    private static final String NO_ITEM_IN_HAND = "손에 아이템을 들고 명령어를 사용해주세요.";
+    private static final String NO_ITEM_NAME = "아이템 등록 실패: 아이템 이름을 입력해주세요.";
+    private static final String NO_ITEM_IN_HAND = "아이템 등록 실패: 손에 아이템을 들고 명령어를 사용해주세요.";
     private static final String FAIL_REGISTER_ITEM = "아이템 등록 실패: DB 연결 오류 혹은 이미 등록된 아이템 이름입니다.)";
     private static final String SUCCESS_REGISTER_ITEM = "아이템 등록 성공";
     private static final List<String> EMPTY_AUTOCOMPLETE = List.of();
-    private static final List<String> SUB_COMMAND_AUTOCOMPLETE = List.of("아이템 이름");
+    private static final List<String> SUB_COMMAND_AUTOCOMPLETE = List.of("<아이템 이름>");
     private static final int MAX_SUB_COMMAND_COUNT = 1;
 
     @Override
