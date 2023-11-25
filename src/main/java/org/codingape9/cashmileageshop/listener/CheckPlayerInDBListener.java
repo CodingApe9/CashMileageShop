@@ -13,6 +13,7 @@ import org.codingape9.cashmileageshop.util.PlayerUtil;
 import org.codingape9.cashmileageshop.view.ServerConsole;
 
 public class CheckPlayerInDBListener implements Listener {
+    private static final String FAIL_INSERT_PLAYER = "플레이어 데이터를 DB에 저장하는데 실패했습니다. 플레이어 UUID: ";
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerJoin(PlayerJoinEvent event) {
@@ -23,7 +24,7 @@ public class CheckPlayerInDBListener implements Listener {
             UserDto userDto = new UserDto(player.getUniqueId().toString());
             int insertUserCount = userRepository.insertUser(userDto);
             if (insertUserCount == 0) {
-                ServerConsole.sendErrorMessage(player.getUniqueId().toString() + ": 플레이어가 DB에 추가되지 않았습니다.");
+                ServerConsole.sendErrorMessage(FAIL_INSERT_PLAYER + player.getUniqueId().toString());
             }
         }
     }

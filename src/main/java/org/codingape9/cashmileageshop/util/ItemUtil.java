@@ -10,6 +10,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class ItemUtil {
+    private static final String CANNOT_SERIALIZE_ITEM_STACK = "Cannot serialize item stack.";
 
     public static String serialize(ItemStack itemStack) {
         try {
@@ -19,7 +20,7 @@ public class ItemUtil {
             dataOutput.writeObject(itemStack);
             return Base64Coder.encodeLines(outputStream.toByteArray());
         } catch (Exception e) {
-            throw new IllegalStateException("Unable to save item stack.", e);
+            throw new IllegalStateException(CANNOT_SERIALIZE_ITEM_STACK + e);
         }
     }
 

@@ -13,6 +13,7 @@ public final class CashMileageShop extends JavaPlugin {
     public static MyBatisManager MYBATIS_MANAGER;
     private static final String PLUGIN_ON = "플러그인이 활성화되었습니다.";
     private static final String PLUGIN_OFF = "플러그인이 비활성화되었습니다";
+    private static final File NOT_EXIST_PLUGIN_FOLDER = null;
 
     @Override
     public void onEnable() {
@@ -33,7 +34,7 @@ public final class CashMileageShop extends JavaPlugin {
     }
 
     public void createPluginFolder() {
-        if (PLUGIN_FOLDER == null) {
+        if (PLUGIN_FOLDER == NOT_EXIST_PLUGIN_FOLDER) {
             File folder = getDataFolder();
             if (!folder.exists()) {
                 folder.mkdir();

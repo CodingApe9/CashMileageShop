@@ -5,7 +5,9 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.codingape9.cashmileageshop.mapper.UserMapper;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 
 public class MyBatisManager {
     private final SqlSessionFactory sessionFactory;
