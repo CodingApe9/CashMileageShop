@@ -1,7 +1,9 @@
 package org.codingape9.cashmileageshop;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import org.codingape9.cashmileageshop.command.CashCommand;
 import org.codingape9.cashmileageshop.command.ItemRegisterCommand;
+import org.codingape9.cashmileageshop.command.MileageCommand;
 import org.codingape9.cashmileageshop.listener.CheckPlayerInDBListener;
 import org.codingape9.cashmileageshop.manager.MyBatisManager;
 import org.codingape9.cashmileageshop.manager.PropertyManager;
@@ -25,6 +27,8 @@ public final class CashMileageShop extends JavaPlugin {
         propertyManager.loadProperties();
 
         getCommand("아이템등록").setExecutor(new ItemRegisterCommand());
+        getCommand("캐시").setExecutor(new CashCommand());
+        getCommand("마일리지").setExecutor(new MileageCommand());
 
         getServer().getPluginManager().registerEvents(new CheckPlayerInDBListener(), this);
 

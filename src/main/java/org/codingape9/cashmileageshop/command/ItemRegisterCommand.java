@@ -34,7 +34,7 @@ public class ItemRegisterCommand implements CommandExecutor, TabCompleter {
     ) {
         Player player = (Player) sender;
 
-        if (!hasPermission(player)) {
+        if (!player.isOp()) {
             return EMPTY_AUTOCOMPLETE;
         }
 
@@ -80,7 +80,7 @@ public class ItemRegisterCommand implements CommandExecutor, TabCompleter {
     }
 
     private boolean validateCondition(Player player, @NotNull String[] subCommand) {
-        if (!hasPermission(player)) {
+        if (!player.isOp()) {
             return false;
         }
         if (!checkArgs(subCommand)) {
@@ -96,10 +96,6 @@ public class ItemRegisterCommand implements CommandExecutor, TabCompleter {
 
     private boolean isHoldingItem(Player player) {
         return !player.getInventory().getItemInMainHand().getType().isAir();
-    }
-
-    private boolean hasPermission(Player player) {
-        return player.isOp();
     }
 
     private boolean checkArgs(String[] subCommand) {
