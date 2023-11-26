@@ -92,7 +92,7 @@ public abstract class MoneyCommand implements CommandExecutor, TabCompleter {
 
     private boolean executeOpCommand(@NotNull String[] subCommand, Player player) {
         String playerNickName = subCommand[1];
-        UUID playerUUID = PlayerUtil.getPlayerUUID(playerNickName);
+        UUID playerUUID = PlayerUtil.getOnlineOrOfflinePlayerUUID(playerNickName);
         int balance = getValidateBalance(player, subCommand[2]);
         if (balance == NOT_FOUND) {
             return false;
@@ -138,7 +138,7 @@ public abstract class MoneyCommand implements CommandExecutor, TabCompleter {
 
     private boolean printOtherPlayerMoney(@NotNull String[] subCommand, Player player) {
         String playerNickName = subCommand[1];
-        UUID playerUUID = PlayerUtil.getPlayerUUID(playerNickName);
+        UUID playerUUID = PlayerUtil.getOnlineOrOfflinePlayerUUID(playerNickName);
         int playerMoney = getPlayerMoney(playerUUID);
         if (playerMoney == NOT_FOUND) {
             PlayerMessage.sendErrorMessage(player, FAIL_FOUND_PLAYER_ERROR_MESSAGE);

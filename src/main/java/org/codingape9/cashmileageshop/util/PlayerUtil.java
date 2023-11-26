@@ -18,11 +18,23 @@ public class PlayerUtil {
         return user != NOT_FOUND_USER;
     }
 
-    public static UUID getPlayerUUID(String playerName) {
+    public static UUID getOnlineOrOfflinePlayerUUID(String playerName) {
+        UUID playerUUID = getOnlinePlayerUUID(playerName);
+        if (playerUUID != null) {
+            return playerUUID;
+        }
+        return getOfflinePlayerUUID(playerName);
+    }
+
+    private static UUID getOnlinePlayerUUID(String playerName) {
         Player player = Bukkit.getPlayer(playerName);
         if (player != null) {
             return player.getUniqueId();
         }
+        return null;
+    }
+
+    private static UUID getOfflinePlayerUUID(String playerName) {
         return Bukkit.getOfflinePlayer(playerName).getUniqueId();
     }
 }
