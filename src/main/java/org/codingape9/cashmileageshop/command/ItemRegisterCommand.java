@@ -6,7 +6,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.codingape9.cashmileageshop.CashMileageShop;
 import org.codingape9.cashmileageshop.dto.ItemDto;
 import org.codingape9.cashmileageshop.repository.ItemRepository;
 import org.codingape9.cashmileageshop.util.ItemUtil;
@@ -24,6 +23,12 @@ public class ItemRegisterCommand implements CommandExecutor, TabCompleter {
     private static final List<String> EMPTY_AUTOCOMPLETE = List.of();
     private static final List<String> SUB_COMMAND_AUTOCOMPLETE = List.of("<아이템 이름>");
     private static final int MAX_SUB_COMMAND_COUNT = 1;
+
+    private final ItemRepository itemRepository;
+
+    public ItemRegisterCommand(ItemRepository itemRepository) {
+        this.itemRepository = itemRepository;
+    }
 
     @Override
     public @Nullable List<String> onTabComplete(
@@ -74,7 +79,6 @@ public class ItemRegisterCommand implements CommandExecutor, TabCompleter {
         String itemInfo = ItemUtil.serialize(itemStack);
         ItemDto itemDto = new ItemDto(itemInfo, itemName);
 
-        ItemRepository itemRepository = new ItemRepository(CashMileageShop.MYBATIS_MANAGER);
         int insertItemCount = itemRepository.insertItem(itemDto);
         return insertItemCount == 1;
     }
