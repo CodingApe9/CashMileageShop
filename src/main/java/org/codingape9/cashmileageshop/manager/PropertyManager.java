@@ -25,11 +25,13 @@ public class PropertyManager {
             "user_limited", "§f개인 한정: §e%user_remain%/%user_purchases_limited%");
 
     private static final String SERVER_CUSTOM_MESSAGE_SECTION_NAME = "server_custom_message";
-    private static final Map<String, String> SERVER_CUSTOM_MESSAGE_SECTION_MAP = Map.of("ServerErrorMessageHeader", "§4",
+    private static final Map<String, String> SERVER_CUSTOM_MESSAGE_SECTION_MAP = Map.of("ServerErrorMessageHeader",
+            "§4",
             "ServerSuccessMessageHeader", "§2");
 
     private static final String PLAYER_CUSTOM_MESSAGE_SECTION_NAME = "user_custom_message";
-    private static final Map<String, String> PLAYER_CUSTOM_MESSAGE_SECTION_MAP = Map.of("sendFailMessageHeader", "§c◇§f",
+    private static final Map<String, String> PLAYER_CUSTOM_MESSAGE_SECTION_MAP = Map.of("sendFailMessageHeader",
+            "§c◇§f",
             "sendSuccessMessageHeader", "§a◇§f");
 
     private PropertyManager() {
@@ -45,11 +47,14 @@ public class PropertyManager {
 
     public void loadProperties() {
         loadProperty(CUSTOM_ITEM_INFO_SECTION_NAME, CUSTOM_ITEM_INFO_SECTION_MAP, this::assignCustomItemInfo);
-        loadProperty(SERVER_CUSTOM_MESSAGE_SECTION_NAME, SERVER_CUSTOM_MESSAGE_SECTION_MAP, this::assignServerCustomMessage);
-        loadProperty(PLAYER_CUSTOM_MESSAGE_SECTION_NAME, PLAYER_CUSTOM_MESSAGE_SECTION_MAP, this::assignPlayerCustomMessage);
+        loadProperty(SERVER_CUSTOM_MESSAGE_SECTION_NAME, SERVER_CUSTOM_MESSAGE_SECTION_MAP,
+                this::assignServerCustomMessage);
+        loadProperty(PLAYER_CUSTOM_MESSAGE_SECTION_NAME, PLAYER_CUSTOM_MESSAGE_SECTION_MAP,
+                this::assignPlayerCustomMessage);
     }
 
-    private void loadProperty(String sectionName, Map<String, String> defaultValues, Consumer<ConfigurationSection> assignFunction) {
+    private void loadProperty(String sectionName, Map<String, String> defaultValues,
+                              Consumer<ConfigurationSection> assignFunction) {
         hasProperty(sectionName, defaultValues);
         File configFile = new File(CashMileageShop.PLUGIN_FOLDER, CONFIG_FILE_NAME);
         YamlConfiguration config = ConfigLoader.loadConfig(configFile);
@@ -73,23 +78,36 @@ public class PropertyManager {
         PlayerMessage.PLAYER_SUCCESS_MESSAGE_HEADER = section.getString("sendSuccessMessageHeader");
     }
 
-    private void hasProperty(
-            String propertyName,
-            Map<String, String> defaultProperties
-    ) {
+    private void hasProperty(String propertyName, Map<String, String> defaultProperties) {
         File configFile = new File(CashMileageShop.PLUGIN_FOLDER, CONFIG_FILE_NAME);
-        YamlConfiguration config = ConfigLoader.loadConfig(configFile);
-        ConfigurationSection customItemInfoConfig = config.getConfigurationSection(propertyName);
+        YamlConfiguration config = loadConfiguration(configFile);
 
-        if (customItemInfoConfig == null) {
-            ConfigurationSection newCustomItemInfoSection = config.createSection(propertyName);
-            defaultProperties.forEach(newCustomItemInfoSection::set);
-            try {
-                config.save(configFile);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            throw new RuntimeException(NO_SECTION_EXCEPTION_MESSAGE.formatted(CONFIG_FILE_NAME, propertyName));
+        if (!existsProperty(config, propertyName)) {
+            addDefaultProperties(config, configFile, propertyName, defaultProperties);
+        }
+    }
+
+    private YamlConfiguration loadConfiguration(File configFile) {
+        return ConfigLoader.loadConfig(configFile);
+    }
+
+    private boolean existsProperty(YamlConfiguration config, String propertyName) {
+        return config.getConfigurationSection(propertyName) != null;
+    }
+
+    private void addDefaultProperties(YamlConfiguration config, File configFile, String propertyName,
+                                      Map<String, String> defaultProperties) {
+        ConfigurationSection section = config.createSection(propertyName);
+        defaultProperties.forEach(section::set);
+        saveConfiguration(config, configFile);
+        throw new RuntimeException(NO_SECTION_EXCEPTION_MESSAGE.formatted(CONFIG_FILE_NAME, propertyName));
+    }
+
+    private void saveConfiguration(YamlConfiguration config, File configFile) {
+        try {
+            config.save(configFile);
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
         }
     }
 }
