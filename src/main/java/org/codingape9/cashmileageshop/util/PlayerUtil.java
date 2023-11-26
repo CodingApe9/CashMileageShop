@@ -11,9 +11,7 @@ import java.util.UUID;
 public class PlayerUtil {
     private static final UserDto NOT_FOUND_USER = null;
 
-    public static boolean isPlayerInDB(Player player) {
-        UserRepository userRepository = new UserRepository(CashMileageShop.MYBATIS_MANAGER);
-
+    public static boolean isPlayerInDB(Player player, UserRepository userRepository) {
         UserDto user = userRepository.selectUser(player.getUniqueId());
         return user != NOT_FOUND_USER;
     }

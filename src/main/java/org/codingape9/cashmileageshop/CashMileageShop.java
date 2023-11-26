@@ -31,7 +31,7 @@ public final class CashMileageShop extends JavaPlugin {
         getCommand("캐시").setExecutor(new CashCommand(new UserRepository(MYBATIS_MANAGER)));
         getCommand("마일리지").setExecutor(new MileageCommand(new UserRepository(MYBATIS_MANAGER)));
 
-        getServer().getPluginManager().registerEvents(new CheckPlayerInDBListener(), this);
+        getServer().getPluginManager().registerEvents(new CheckPlayerInDBListener(new UserRepository(MYBATIS_MANAGER)), this);
 
         ServerConsole.sendSuccessMessage(PLUGIN_ON);
     }
