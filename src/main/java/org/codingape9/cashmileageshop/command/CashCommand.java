@@ -8,13 +8,20 @@ import java.util.UUID;
 
 public class CashCommand extends MoneyCommand {
     private static final int NOT_FOUND = -1;
-    private static final String SELF_CASH_FORMAT = "캐시: §a%s§f원";
-    private static final String PLAYER_CASH_FORMAT = "§e%s§f님의 캐시: §a%d§f원";
+    private static final String COLOR_GREEN = "§a";
+    private static final String COLOR_YELLOW = "§e";
+    private static final String COLOR_WHITE = "§f";
+    private static final String SELF_CASH_FORMAT = "캐시: " + COLOR_GREEN + "%s" + COLOR_WHITE + "원";
+    private static final String PLAYER_CASH_FORMAT =
+            COLOR_YELLOW + "%s" + COLOR_WHITE + "님의 캐시: " + COLOR_GREEN + "%d" + COLOR_WHITE + "원";
+    private final UserRepository userRepository;
 
+    public CashCommand(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     int getPlayerMoney(UUID playerUUID) {
-        UserRepository userRepository = new UserRepository(CashMileageShop.MYBATIS_MANAGER);
         UserDto userDto = userRepository.selectUser(playerUUID);
         if (userDto == null) {
             return NOT_FOUND;
@@ -34,19 +41,16 @@ public class CashCommand extends MoneyCommand {
 
     @Override
     int setPlayerMoney(UUID playerUUID, int balance) {
-        UserRepository userRepository = new UserRepository(CashMileageShop.MYBATIS_MANAGER);
         return userRepository.updateUserCash(playerUUID, balance);
     }
 
     @Override
     int addPlayerMoney(UUID playerUUID, int balance) {
-        UserRepository userRepository = new UserRepository(CashMileageShop.MYBATIS_MANAGER);
         return userRepository.updateUserAddCash(playerUUID, balance);
     }
 
     @Override
     int subPlayerMoney(UUID playerUUID, int balance) {
-        UserRepository userRepository = new UserRepository(CashMileageShop.MYBATIS_MANAGER);
         return userRepository.updateUserSubCash(playerUUID, balance);
     }
 }

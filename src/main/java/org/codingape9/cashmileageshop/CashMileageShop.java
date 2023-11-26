@@ -7,6 +7,7 @@ import org.codingape9.cashmileageshop.command.MileageCommand;
 import org.codingape9.cashmileageshop.listener.CheckPlayerInDBListener;
 import org.codingape9.cashmileageshop.manager.MyBatisManager;
 import org.codingape9.cashmileageshop.manager.PropertyManager;
+import org.codingape9.cashmileageshop.repository.UserRepository;
 import org.codingape9.cashmileageshop.view.ServerConsole;
 
 import java.io.File;
@@ -27,8 +28,8 @@ public final class CashMileageShop extends JavaPlugin {
         propertyManager.loadProperties();
 
         getCommand("아이템등록").setExecutor(new ItemRegisterCommand());
-        getCommand("캐시").setExecutor(new CashCommand());
-        getCommand("마일리지").setExecutor(new MileageCommand());
+        getCommand("캐시").setExecutor(new CashCommand(new UserRepository(MYBATIS_MANAGER)));
+        getCommand("마일리지").setExecutor(new MileageCommand(new UserRepository(MYBATIS_MANAGER)));
 
         getServer().getPluginManager().registerEvents(new CheckPlayerInDBListener(), this);
 
