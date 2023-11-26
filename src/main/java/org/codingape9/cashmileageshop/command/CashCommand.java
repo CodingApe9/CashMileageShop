@@ -1,6 +1,5 @@
 package org.codingape9.cashmileageshop.command;
 
-import org.codingape9.cashmileageshop.CashMileageShop;
 import org.codingape9.cashmileageshop.dto.UserDto;
 import org.codingape9.cashmileageshop.repository.UserRepository;
 
