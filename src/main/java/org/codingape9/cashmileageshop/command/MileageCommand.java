@@ -14,6 +14,7 @@ public class MileageCommand extends MoneyCommand {
     private static final String SELF_MILEAGE_FORMAT = "마일리지: " + COLOR_GREEN + "%s" + COLOR_WHITE + "원";
     private static final String PLAYER_MILEAGE_FORMAT =
             COLOR_YELLOW + "%s" + COLOR_WHITE + "님의 마일리지: " + COLOR_GREEN + "%d" + COLOR_WHITE + "원";
+
     private final UserRepository userRepository;
 
     public MileageCommand(UserRepository userRepository) {

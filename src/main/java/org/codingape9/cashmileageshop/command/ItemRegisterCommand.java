@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.codingape9.cashmileageshop.dto.ItemDto;
 import org.codingape9.cashmileageshop.repository.ItemRepository;
 import org.codingape9.cashmileageshop.util.ItemUtil;
-import org.codingape9.cashmileageshop.view.PlayerMessage;
+import org.codingape9.cashmileageshop.view.PlayerMessageSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -68,10 +68,10 @@ public class ItemRegisterCommand implements CommandExecutor, TabCompleter {
 
         boolean isItemRegistered = registerItem(holdingItem, itemName);
         if (!isItemRegistered) {
-            PlayerMessage.sendErrorMessage(player, FAIL_REGISTER_ITEM);
+            PlayerMessageSender.sendErrorMessage(player, FAIL_REGISTER_ITEM);
             return false;
         }
-        PlayerMessage.sendSuccessMessage(player, SUCCESS_REGISTER_ITEM);
+        PlayerMessageSender.sendSuccessMessage(player, SUCCESS_REGISTER_ITEM);
         return true;
     }
 
@@ -88,11 +88,11 @@ public class ItemRegisterCommand implements CommandExecutor, TabCompleter {
             return false;
         }
         if (!checkArgs(subCommand)) {
-            PlayerMessage.sendErrorMessage(player, NO_ITEM_NAME);
+            PlayerMessageSender.sendErrorMessage(player, NO_ITEM_NAME);
             return false;
         }
         if (!isHoldingItem(player)) {
-            PlayerMessage.sendErrorMessage(player, NO_ITEM_IN_HAND);
+            PlayerMessageSender.sendErrorMessage(player, NO_ITEM_IN_HAND);
             return false;
         }
         return true;

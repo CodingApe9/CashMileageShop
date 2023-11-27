@@ -5,7 +5,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.codingape9.cashmileageshop.CashMileageShop;
 import org.codingape9.cashmileageshop.gui.ShopGui;
 import org.codingape9.cashmileageshop.util.ConfigLoader;
-import org.codingape9.cashmileageshop.view.PlayerMessage;
+import org.codingape9.cashmileageshop.view.PlayerMessageSender;
 import org.codingape9.cashmileageshop.view.ServerConsole;
 
 import java.io.File;
@@ -74,8 +74,8 @@ public class PropertyManager {
     }
 
     private void assignPlayerCustomMessage(ConfigurationSection section) {
-        PlayerMessage.PLAYER_ERROR_MESSAGE_HEADER = section.getString("sendFailMessageHeader");
-        PlayerMessage.PLAYER_SUCCESS_MESSAGE_HEADER = section.getString("sendSuccessMessageHeader");
+        PlayerMessageSender.PLAYER_ERROR_MESSAGE_HEADER = section.getString("sendFailMessageHeader");
+        PlayerMessageSender.PLAYER_SUCCESS_MESSAGE_HEADER = section.getString("sendSuccessMessageHeader");
     }
 
     private void hasProperty(String propertyName, Map<String, String> defaultProperties) {

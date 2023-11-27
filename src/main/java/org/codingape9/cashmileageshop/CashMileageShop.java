@@ -18,6 +18,7 @@ public final class CashMileageShop extends JavaPlugin {
     public static MyBatisManager MYBATIS_MANAGER;
     private static final String PLUGIN_ON = "플러그인이 활성화되었습니다.";
     private static final String PLUGIN_OFF = "플러그인이 비활성화되었습니다";
+    private static final String PLUGIN_FOLDER_NOT_EXIST = "플러그인 폴더가 존재하지 않습니다.";
     private static final File NOT_EXIST_PLUGIN_FOLDER = null;
 
     @Override
@@ -30,6 +31,7 @@ public final class CashMileageShop extends JavaPlugin {
 
         getCommand("아이템등록").setExecutor(new ItemRegisterCommand(new ItemRepository(MYBATIS_MANAGER)));
         getCommand("캐시").setExecutor(new CashCommand(new UserRepository(MYBATIS_MANAGER)));
+
         getCommand("마일리지").setExecutor(new MileageCommand(new UserRepository(MYBATIS_MANAGER)));
 
         getServer().getPluginManager().registerEvents(new CheckPlayerInDBListener(new UserRepository(MYBATIS_MANAGER)), this);
@@ -47,6 +49,7 @@ public final class CashMileageShop extends JavaPlugin {
             File folder = getDataFolder();
             if (!folder.exists()) {
                 folder.mkdir();
+                ServerConsole.sendErrorMessage(PLUGIN_FOLDER_NOT_EXIST);
             }
             PLUGIN_FOLDER = folder;
         }

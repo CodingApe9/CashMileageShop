@@ -2,7 +2,7 @@ package org.codingape9.cashmileageshop.view;
 
 import org.bukkit.entity.Player;
 
-public class PlayerMessage {
+public class PlayerMessageSender {
     public static String PLAYER_ERROR_MESSAGE_HEADER;
     public static String PLAYER_SUCCESS_MESSAGE_HEADER;
 

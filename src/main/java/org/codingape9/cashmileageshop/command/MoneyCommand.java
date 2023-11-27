@@ -6,7 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.codingape9.cashmileageshop.util.PlayerUtil;
-import org.codingape9.cashmileageshop.view.PlayerMessage;
+import org.codingape9.cashmileageshop.view.PlayerMessageSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -83,14 +83,14 @@ public abstract class MoneyCommand implements CommandExecutor, TabCompleter {
             return printOtherPlayerMoney(subCommand, player);
         }
         if (isOtherCommand(subCommand)) {
-            return executeOpCommand(subCommand, player);
+            return executeMoneyOpCommand(subCommand, player);
         }
 
-        PlayerMessage.sendErrorMessage(player, FAIL_OP_COMMAND_EXECUTE);
+        PlayerMessageSender.sendErrorMessage(player, FAIL_OP_COMMAND_EXECUTE);
         return false;
     }
 
-    private boolean executeOpCommand(@NotNull String[] subCommand, Player player) {
+    private boolean executeMoneyOpCommand(@NotNull String[] subCommand, Player player) {
         String playerNickName = subCommand[1];
         UUID playerUUID = PlayerUtil.getOnlineOrOfflinePlayerUUID(playerNickName);
         int balance = getValidateBalance(player, subCommand[2]);
@@ -101,19 +101,19 @@ public abstract class MoneyCommand implements CommandExecutor, TabCompleter {
         String coreCommand = subCommand[0];
         if (coreCommand.equals(OTHER_COMMAND.get(SET_MONEY))) {
             if (setPlayerMoney(playerUUID, balance) == UPDATE_FAIL) {
-                PlayerMessage.sendErrorMessage(player, FAIL_OP_COMMAND_EXECUTE);
+                PlayerMessageSender.sendErrorMessage(player, FAIL_OP_COMMAND_EXECUTE);
                 return false;
             }
         }
         if (coreCommand.equals(OTHER_COMMAND.get(ADD_MONEY))) {
             if (addPlayerMoney(playerUUID, balance) == UPDATE_FAIL) {
-                PlayerMessage.sendErrorMessage(player, FAIL_OP_COMMAND_EXECUTE);
+                PlayerMessageSender.sendErrorMessage(player, FAIL_OP_COMMAND_EXECUTE);
                 return false;
             }
         }
         if (coreCommand.equals(OTHER_COMMAND.get(SUB_MONEY))) {
             if (subPlayerMoney(playerUUID, balance) == UPDATE_FAIL) {
-                PlayerMessage.sendErrorMessage(player, FAIL_OP_COMMAND_EXECUTE);
+                PlayerMessageSender.sendErrorMessage(player, FAIL_OP_COMMAND_EXECUTE);
                 return false;
             }
         }
@@ -126,11 +126,11 @@ public abstract class MoneyCommand implements CommandExecutor, TabCompleter {
         try {
             validateBalance = Integer.parseInt(balance);
         } catch (NumberFormatException e) {
-            PlayerMessage.sendErrorMessage(player, BALANCE_NOT_NUMBER_ERROR_MESSAGE);
+            PlayerMessageSender.sendErrorMessage(player, BALANCE_NOT_NUMBER_ERROR_MESSAGE);
             return NOT_FOUND;
         }
         if (validateBalance < 0) {
-            PlayerMessage.sendErrorMessage(player, BALANCE_MINUS_ERROR_MESSAGE);
+            PlayerMessageSender.sendErrorMessage(player, BALANCE_MINUS_ERROR_MESSAGE);
             return NOT_FOUND;
         }
         return validateBalance;
@@ -141,20 +141,20 @@ public abstract class MoneyCommand implements CommandExecutor, TabCompleter {
         UUID playerUUID = PlayerUtil.getOnlineOrOfflinePlayerUUID(playerNickName);
         int playerMoney = getPlayerMoney(playerUUID);
         if (playerMoney == NOT_FOUND) {
-            PlayerMessage.sendErrorMessage(player, FAIL_FOUND_PLAYER_ERROR_MESSAGE);
+            PlayerMessageSender.sendErrorMessage(player, FAIL_FOUND_PLAYER_ERROR_MESSAGE);
             return false;
         }
-        PlayerMessage.sendSuccessMessage(player, getMoneyConfirmMessage(playerNickName, playerMoney));
+        PlayerMessageSender.sendSuccessMessage(player, getMoneyConfirmMessage(playerNickName, playerMoney));
         return true;
     }
 
     private boolean printSelfMoney(Player player) {
         int playerMoney = getPlayerMoney(player.getUniqueId());
         if (playerMoney == NOT_FOUND) {
-            PlayerMessage.sendErrorMessage(player, FAIL_FOUND_PLAYER_ERROR_MESSAGE);
+            PlayerMessageSender.sendErrorMessage(player, FAIL_FOUND_PLAYER_ERROR_MESSAGE);
             return false;
         }
-        PlayerMessage.sendSuccessMessage(player, getMoneyConfirmMessage(playerMoney));
+        PlayerMessageSender.sendSuccessMessage(player, getMoneyConfirmMessage(playerMoney));
         return true;
     }
 

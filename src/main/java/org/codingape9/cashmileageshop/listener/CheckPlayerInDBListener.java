@@ -6,7 +6,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.codingape9.cashmileageshop.CashMileageShop;
 import org.codingape9.cashmileageshop.dto.UserDto;
 import org.codingape9.cashmileageshop.repository.UserRepository;
 import org.codingape9.cashmileageshop.util.PlayerUtil;
@@ -28,7 +27,7 @@ public class CheckPlayerInDBListener implements Listener {
             UserDto userDto = new UserDto(player.getUniqueId().toString());
             int insertUserCount = userRepository.insertUser(userDto);
             if (insertUserCount == 0) {
-                ServerConsole.sendErrorMessage(FAIL_INSERT_PLAYER + player.getUniqueId().toString());
+                ServerConsole.sendErrorMessage(FAIL_INSERT_PLAYER + player.getUniqueId());
             }
         }
     }

@@ -13,6 +13,7 @@ public class CashCommand extends MoneyCommand {
     private static final String SELF_CASH_FORMAT = "캐시: " + COLOR_GREEN + "%s" + COLOR_WHITE + "원";
     private static final String PLAYER_CASH_FORMAT =
             COLOR_YELLOW + "%s" + COLOR_WHITE + "님의 캐시: " + COLOR_GREEN + "%d" + COLOR_WHITE + "원";
+
     private final UserRepository userRepository;
 
     public CashCommand(UserRepository userRepository) {
