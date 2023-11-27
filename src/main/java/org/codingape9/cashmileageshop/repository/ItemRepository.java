@@ -40,4 +40,17 @@ public class ItemRepository {
 
         return itemDtoList;
     }
+
+    public ItemDto selectItemByName(String itemName) {
+        ItemDto itemDto;
+
+        try (SqlSession session = sqlSessionFactory.getSession()) {
+            ItemMapper mapper = session.getMapper(ItemMapper.class);
+            itemDto = mapper.selectItemByName(itemName);
+        } catch (Exception sqlException) {
+            return null;
+        }
+
+        return itemDto;
+    }
 }

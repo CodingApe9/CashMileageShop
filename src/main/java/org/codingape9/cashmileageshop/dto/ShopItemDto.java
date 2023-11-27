@@ -13,13 +13,13 @@ public record ShopItemDto(
     private static final int EMPTY_UUID_ID = -1;
 
     public ShopItemDto(
-            int maxBuyableCnt,
-            int price,
             int itemId,
             int shopId,
-            int maxBuyableCntServer,
+            int price,
+            int state,
             int slotNum,
-            int state
+            int maxBuyableCnt,
+            int maxBuyableCntServer
     ) {
         this(EMPTY_UUID_ID, maxBuyableCnt, price, itemId, shopId, maxBuyableCntServer, slotNum, state);
     }

@@ -6,4 +6,5 @@ api-version: '1.19'
 commands:
   아이템등록:
   캐시:
+  캐시샵:
   마일리지:

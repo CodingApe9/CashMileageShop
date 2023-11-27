@@ -9,7 +9,6 @@ import org.codingape9.cashmileageshop.dto.ItemDto;
 import org.codingape9.cashmileageshop.dto.ShopItemDto;
 import org.codingape9.cashmileageshop.repository.ItemRepository;
 import org.codingape9.cashmileageshop.view.PlayerMessageSender;
-import org.codingape9.cashmileageshop.view.ServerConsole;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,9 +26,9 @@ public abstract class ShopCommand implements TabCompleter, CommandExecutor {
     private static final int CLOSE_SHOP = 6;
     private static final List<String> CREATE_SHOP_EXTRA_COMMAND = List.of("<이름> <줄 수>");
     private static final List<String> DISPLAY_ITEM_EXTRA_COMMAND = List.of("<슬롯번호> <가격> <최대구매가능개수(개인)> <최대구매가능개수(전역)>");
-    private static final List<Integer> UNOPEN_SHOP_STATUS_LIST = List.of(1);
-    private static final List<Integer> OPEN_SHOP_STATUS_LIST = List.of(2);
-    private static final List<Integer> UNDELETED_SHOP_STATUS_LIST = List.of(1, 2);
+    private static final List<Integer> UNOPEN_SHOP_STATE_LIST = List.of(1);
+    private static final List<Integer> OPEN_SHOP_STATE_LIST = List.of(2);
+    private static final List<Integer> UNDELETED_SHOP_STATE_LIST = List.of(1, 2);
     private static final int NO_SUB_COMMAND = 1;
     private static final String WRONG_COMMAND = "명령어를 잘못 입력했습니다.";
     private static final String EXISTING_SHOP = "이미 존재하는 상점입니다. 상점 이름: ";
@@ -82,7 +81,7 @@ public abstract class ShopCommand implements TabCompleter, CommandExecutor {
             return CREATE_SHOP_EXTRA_COMMAND;
         }
         if (firstSubCommand.equals(FIRST_AUTOCOMPLETE.get(DELETE_SHOP))) {
-            return getShopNameList(UNDELETED_SHOP_STATUS_LIST);
+            return getShopNameList(UNDELETED_SHOP_STATE_LIST);
         }
         if (firstSubCommand.equals(FIRST_AUTOCOMPLETE.get(DISPLAY_ITEM))) {
             return getDisplayItemExtraCommand(subCommand);
@@ -94,10 +93,10 @@ public abstract class ShopCommand implements TabCompleter, CommandExecutor {
             return getShopInfoList();
         }
         if (firstSubCommand.equals(FIRST_AUTOCOMPLETE.get(OPEN_SHOP))) {
-            return getShopNameList(UNOPEN_SHOP_STATUS_LIST);
+            return getShopNameList(UNOPEN_SHOP_STATE_LIST);
         }
         if (firstSubCommand.equals(FIRST_AUTOCOMPLETE.get(CLOSE_SHOP))) {
-            return getShopNameList(OPEN_SHOP_STATUS_LIST);
+            return getShopNameList(OPEN_SHOP_STATE_LIST);
         }
 
         return EMPTY_AUTOCOMPLETE;
@@ -160,15 +159,15 @@ public abstract class ShopCommand implements TabCompleter, CommandExecutor {
         String shopName = subCommand[1];
         int lineNum = Integer.parseInt(subCommand[2]);
         if (isShopNameExist(shopName)) {
-            ServerConsole.sendErrorMessage(EXISTING_SHOP + shopName);
+            PlayerMessageSender.sendErrorMessage(administer, EXISTING_SHOP + shopName);
             return false;
         }
         int insertShopCount = createShop(shopName, lineNum);
         if (insertShopCount == 0) {
-            ServerConsole.sendErrorMessage(FAIL_INSERT_SHOP + shopName);
+            PlayerMessageSender.sendErrorMessage(administer, FAIL_INSERT_SHOP + shopName);
             return false;
         }
-        ServerConsole.sendSuccessMessage(SUCCESS_INSERT_SHOP + shopName);
+        PlayerMessageSender.sendSuccessMessage(administer, SUCCESS_INSERT_SHOP + shopName);
         return true;
     }
 
@@ -180,15 +179,15 @@ public abstract class ShopCommand implements TabCompleter, CommandExecutor {
         }
         String shopName = subCommand[1];
         if (!isShopNameExist(shopName)) {
-            ServerConsole.sendErrorMessage(UNDELETEABLE_SHOP + shopName);
+            PlayerMessageSender.sendErrorMessage(administer, UNDELETEABLE_SHOP + shopName);
             return false;
         }
         int deleteShopCount = deleteShop(shopName);
         if (deleteShopCount == 0) {
-            ServerConsole.sendErrorMessage(FAIL_DELETE_SHOP + shopName);
+            PlayerMessageSender.sendErrorMessage(administer, FAIL_DELETE_SHOP + shopName);
             return false;
         }
-        ServerConsole.sendSuccessMessage(SUCCESS_DELETE_SHOP + shopName);
+        PlayerMessageSender.sendSuccessMessage(administer, SUCCESS_DELETE_SHOP + shopName);
         return true;
     }
 
@@ -201,11 +200,11 @@ public abstract class ShopCommand implements TabCompleter, CommandExecutor {
         String shopName = subCommand[1];
         String itemName = subCommand[2];
         if (!isShopNameExist(shopName)) {
-            ServerConsole.sendErrorMessage(UNDELETEABLE_SHOP + shopName);
+            PlayerMessageSender.sendErrorMessage(administer, UNDELETEABLE_SHOP + shopName);
             return false;
         }
         if (!isItemExist(itemName)) {
-            ServerConsole.sendErrorMessage(UNEXISTING_ITEM + itemName);
+            PlayerMessageSender.sendErrorMessage(administer, UNEXISTING_ITEM + itemName);
             return false;
         }
         int slotNumber = Integer.parseInt(subCommand[3]);
@@ -215,10 +214,10 @@ public abstract class ShopCommand implements TabCompleter, CommandExecutor {
 
         int displayShopItemCount = displayShopItem(shopName, itemName, slotNumber, price, maxBuyableCnt, maxBuyableCntServer);
         if (displayShopItemCount == 0) {
-            ServerConsole.sendErrorMessage(FAIL_DISPLAY_ITEM.formatted(shopName, itemName));
+            PlayerMessageSender.sendErrorMessage(administer, FAIL_DISPLAY_ITEM.formatted(shopName, itemName));
             return false;
         }
-        ServerConsole.sendSuccessMessage(SUCCESS_DISPLAY_ITEM.formatted(shopName, itemName));
+        PlayerMessageSender.sendSuccessMessage(administer, SUCCESS_DISPLAY_ITEM.formatted(shopName, itemName));
         return true;
     }
 
@@ -230,21 +229,21 @@ public abstract class ShopCommand implements TabCompleter, CommandExecutor {
         }
         String shopName = subCommand[1];
         if (!isShopNameExist(shopName)) {
-            ServerConsole.sendErrorMessage(UNDELETEABLE_SHOP + shopName);
+            PlayerMessageSender.sendErrorMessage(administer, UNDELETEABLE_SHOP + shopName);
             return false;
         }
         int slotNum = Integer.parseInt(subCommand[2]);
-        List<Integer> shopItemSlotNumList = getShopItemSlotNumList(shopName);
+        List<Integer> shopItemSlotNumList = getShopItemSlotNumberList(shopName);
         if (!shopItemSlotNumList.contains(slotNum)) {
-            ServerConsole.sendErrorMessage(UNEXISTING_ITEM_IN_SHOP.formatted(shopName, slotNum));
+            PlayerMessageSender.sendErrorMessage(administer, UNEXISTING_ITEM_IN_SHOP.formatted(shopName, slotNum));
             return false;
         }
         int deleteShopItemCount = deleteShopItem(shopName, slotNum);
         if (deleteShopItemCount == 0) {
-            ServerConsole.sendErrorMessage(FAIL_DELETE_ITEM_IN_SHOP.formatted(shopName, slotNum));
+            PlayerMessageSender.sendErrorMessage(administer, FAIL_DELETE_ITEM_IN_SHOP.formatted(shopName, slotNum));
             return false;
         }
-        ServerConsole.sendSuccessMessage(SUCCESS_DELETE_ITEM_IN_SHOP.formatted(shopName, slotNum));
+        PlayerMessageSender.sendSuccessMessage(administer, SUCCESS_DELETE_ITEM_IN_SHOP.formatted(shopName, slotNum));
         return true;
     }
 
@@ -256,7 +255,7 @@ public abstract class ShopCommand implements TabCompleter, CommandExecutor {
         }
         String shopName = getShopName(subCommand[1]);
         if (!isShopNameExist(shopName)) {
-            ServerConsole.sendErrorMessage(UNDELETEABLE_SHOP + shopName);
+            PlayerMessageSender.sendErrorMessage(administer, UNDELETEABLE_SHOP + shopName);
             return false;
         }
         PlayerMessageSender.sendSuccessMessage(administer, getShopItemInfo(shopName));
@@ -271,14 +270,14 @@ public abstract class ShopCommand implements TabCompleter, CommandExecutor {
         }
 
         String shopName = subCommand[1];
-        List<String> closedShopNameList = getShopNameList(UNOPEN_SHOP_STATUS_LIST);
+        List<String> closedShopNameList = getShopNameList(UNOPEN_SHOP_STATE_LIST);
         if (!closedShopNameList.contains(shopName)) {
             PlayerMessageSender.sendErrorMessage(administer, UNDEFINED_SHOP + shopName);
         }
 
         int openShopCount = openShop(shopName);
         if (openShopCount == 0) {
-            ServerConsole.sendErrorMessage(FAIL_OPEN_SHOP + shopName);
+            PlayerMessageSender.sendErrorMessage(administer, FAIL_OPEN_SHOP + shopName);
             return false;
         }
         PlayerMessageSender.sendSuccessMessage(administer, SUCCESS_OPEN_SHOP + shopName);
@@ -293,13 +292,13 @@ public abstract class ShopCommand implements TabCompleter, CommandExecutor {
         }
 
         String shopName = subCommand[1];
-        List<String> openedShopNameList = getShopNameList(OPEN_SHOP_STATUS_LIST);
+        List<String> openedShopNameList = getShopNameList(OPEN_SHOP_STATE_LIST);
         if (!openedShopNameList.contains(shopName)) {
             PlayerMessageSender.sendErrorMessage(administer, UNDEFINED_SHOP + shopName);
         }
         int closeShopCount = closeShop(shopName);
         if (closeShopCount == 0) {
-            ServerConsole.sendErrorMessage(FAIL_CLOSE_SHOP + shopName);
+            PlayerMessageSender.sendErrorMessage(administer, FAIL_CLOSE_SHOP + shopName);
             return false;
         }
         PlayerMessageSender.sendSuccessMessage(administer, SUCCESS_CLOSE_SHOP + shopName);
@@ -327,16 +326,19 @@ public abstract class ShopCommand implements TabCompleter, CommandExecutor {
     }
 
     private boolean isShopNameExist(String shopName) {
-        return getShopNameList(UNDELETED_SHOP_STATUS_LIST).contains(shopName);
+        return getShopNameList(UNDELETED_SHOP_STATE_LIST).contains(shopName);
     }
 
     private List<String> getDeleteItemExtraCommand(String[] subCommand) {
         int subCommandCount = subCommand.length;
         String inputShopName = subCommand[1];
-        List<String> shopNameList = getShopNameList(UNDELETED_SHOP_STATUS_LIST);
+        List<String> shopNameList = getShopNameList(UNDELETED_SHOP_STATE_LIST);
 
         if (subCommandCount > 2 && shopNameList.contains(inputShopName)) {
-            return getShopItemNameAndSlotNumberList(inputShopName);
+            return getShopItemSlotNumberList(inputShopName)
+                    .stream()
+                    .map(String::valueOf)
+                    .toList();
         }
         return shopNameList;
     }
@@ -344,7 +346,7 @@ public abstract class ShopCommand implements TabCompleter, CommandExecutor {
     private List<String> getDisplayItemExtraCommand(String[] subCommand) {
         int subCommandCount = subCommand.length;
         String inputShopName = subCommand[1];
-        List<String> shopNameList = getShopNameList(UNDELETED_SHOP_STATUS_LIST);
+        List<String> shopNameList = getShopNameList(UNDELETED_SHOP_STATE_LIST);
 
         if (subCommandCount > 2 && shopNameList.contains(inputShopName)) {
             List<String> itemNameList = getItemNameList();
@@ -365,9 +367,9 @@ public abstract class ShopCommand implements TabCompleter, CommandExecutor {
                 .toList();
     }
 
-    abstract List<String> getShopNameList(List<Integer> statusList);
+    abstract List<String> getShopNameList(List<Integer> stateList);
 
-    abstract List<String> getShopItemNameAndSlotNumberList(String shopName);
+    abstract List<Integer> getShopItemSlotNumberList(String shopName);
 
     abstract List<String> getShopInfoList();
 
@@ -378,8 +380,6 @@ public abstract class ShopCommand implements TabCompleter, CommandExecutor {
     abstract int displayShopItem(String shopName, String itemName, int slotNumber, int price, int maxBuyableCnt, int maxBuyableCntServer);
 
     abstract int deleteShopItem(String shopName, int slotNumber);
-
-    abstract List<Integer> getShopItemSlotNumList(String shopName);
 
     abstract List<ShopItemDto> getShopItemList(String shopName);
 

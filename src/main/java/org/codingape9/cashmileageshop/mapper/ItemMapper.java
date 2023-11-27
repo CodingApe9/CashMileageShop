@@ -14,4 +14,7 @@ public interface ItemMapper {
 
     @Select("SELECT * FROM item")
     List<ItemDto> selectItem();
+
+    @Select("SELECT * FROM item WHERE name = #{itemName}")
+    ItemDto selectItemByName(String itemName);
 }
