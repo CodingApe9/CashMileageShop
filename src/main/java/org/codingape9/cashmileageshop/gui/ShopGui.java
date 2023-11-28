@@ -1,5 +1,6 @@
 package org.codingape9.cashmileageshop.gui;
 
+import java.util.ArrayList;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -38,29 +39,34 @@ public abstract class ShopGui {
         this.inventory = inventory;
     }
 
-    public void setShopItem(UUID uuid) {
-        List<ItemInfoDto> shopItemInfoList = getShopItemInfoList();
-        shopItemInfoList.forEach(itemInfoDto -> {
-            ItemStack shopItemStack = getShopItemStack(uuid, itemInfoDto);
-            inventory.setItem(itemInfoDto.slotNum(), shopItemStack);
-        });
+    public void setShopItems(UUID uuid) {
+        getShopItemInfoList().forEach(itemInfoDto -> setShopItem(uuid, itemInfoDto));
     }
 
-    private ItemStack getShopItemStack(UUID uuid, ItemInfoDto itemInfoDto) {
+    private void setShopItem(UUID uuid, ItemInfoDto itemInfoDto) {
+        ItemStack shopItemStack = createItemStack(uuid, itemInfoDto);
+        inventory.setItem(itemInfoDto.slotNum(), shopItemStack);
+    }
+
+    private ItemStack createItemStack(UUID uuid, ItemInfoDto itemInfoDto) {
+        ItemStack itemStack = ItemUtil.deserialize(itemInfoDto.itemInfo());
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        List<Component> itemLore = createItemLore(uuid, itemInfoDto);
+        itemMeta.lore(itemLore);
+        return itemStack;
+    }
+
+    private List<Component> createItemLore(UUID uuid, ItemInfoDto itemInfoDto) {
         String priceInfo = getPriceInfo(itemInfoDto);
         String buyableInfo = getBuyableStateInfo(itemInfoDto, uuid);
         String serverBuyableInfo = getServerBuyableStateInfo(itemInfoDto, uuid);
 
-        ItemStack itemStack = ItemUtil.deserialize(itemInfoDto.itemInfo());
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        List<Component> itemLore = itemMeta.lore();
-        itemLore.addAll(SHOP_ITEM_INFO_HEADER);
+        List<Component> itemLore = new ArrayList<>(SHOP_ITEM_INFO_HEADER);
         itemLore.add(Component.text(priceInfo));
         itemLore.add(Component.text(buyableInfo));
         itemLore.add(Component.text(serverBuyableInfo));
         itemLore.addAll(SHOP_ITEM_INFO_FOOTER);
-        itemMeta.lore(itemLore);
-        return itemStack;
+        return itemLore;
     }
 
     private String getPriceInfo(ItemInfoDto itemInfoDto) {
