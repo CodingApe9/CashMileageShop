@@ -11,11 +11,6 @@ import org.codingape9.cashmileageshop.state.ShopState;
 import java.util.List;
 
 public class CashShopCommand extends ShopCommand {
-    private static final List<Integer> ALL_STATE_LIST = List.of(1, 2, 3);
-    private static final int CLOSE_STATE = 1;
-    private static final int OPEN_STATE = 2;
-    private static final int DELETE_STATE = 3;
-
     private final CashShopRepository cashShopRepository;
     private final CashItemRepository cashItemRepository;
     private final ItemRepository itemRepository;
@@ -52,15 +47,9 @@ public class CashShopCommand extends ShopCommand {
 
     @Override
     List<String> getShopInfoList() {
-        return cashShopRepository.selectCashShopList(ALL_STATE_LIST)
+        return cashShopRepository.selectCashShopList(ShopState.ALL_STATE_LIST)
                 .stream()
-                .map(
-                        shopDto -> String.format(
-                                "%s(%s)",
-                                shopDto.name(),
-                                ShopState.of(shopDto.state()).getStateName()
-                        )
-                )
+                .map(shopDto -> String.format("%s(%s)", shopDto.name(), ShopState.of(shopDto.state()).getStateName()))
                 .toList();
     }
 
@@ -71,7 +60,7 @@ public class CashShopCommand extends ShopCommand {
 
     @Override
     int deleteShop(String cashShopName) {
-        return cashShopRepository.updateCashShopState(cashShopName, DELETE_STATE);
+        return cashShopRepository.updateCashShopState(cashShopName, ShopState.DELETE_STATE.getStateNumber());
     }
 
     @Override
@@ -89,7 +78,7 @@ public class CashShopCommand extends ShopCommand {
                 item.id(),
                 cashShop.id(),
                 price,
-                1,
+                ShopState.CLOSE_STATE.getStateNumber(),
                 slotNumber,
                 maxBuyableCnt,
                 maxBuyableCntServer
@@ -99,7 +88,7 @@ public class CashShopCommand extends ShopCommand {
 
     @Override
     int deleteShopItem(String cashShopName, int slotNumber) {
-        return cashItemRepository.updateCashItemState(cashShopName, slotNumber, DELETE_STATE);
+        return cashItemRepository.updateCashItemState(cashShopName, slotNumber, ShopState.DELETE_STATE.getStateNumber());
     }
 
     @Override
@@ -109,11 +98,11 @@ public class CashShopCommand extends ShopCommand {
 
     @Override
     int openShop(String cashShopName) {
-        return cashShopRepository.updateCashShopState(cashShopName, OPEN_STATE);
+        return cashShopRepository.updateCashShopState(cashShopName, ShopState.OPEN_STATE.getStateNumber());
     }
 
     @Override
     int closeShop(String cashShopName) {
-        return cashShopRepository.updateCashShopState(cashShopName, CLOSE_STATE);
+        return cashShopRepository.updateCashShopState(cashShopName, ShopState.CLOSE_STATE.getStateNumber());
     }
 }
