@@ -6,6 +6,7 @@ import org.codingape9.cashmileageshop.dto.ShopItemDto;
 import org.codingape9.cashmileageshop.repository.CashItemRepository;
 import org.codingape9.cashmileageshop.repository.CashShopRepository;
 import org.codingape9.cashmileageshop.repository.ItemRepository;
+import org.codingape9.cashmileageshop.state.ShopState;
 
 import java.util.List;
 
@@ -31,8 +32,11 @@ public class CashShopCommand extends ShopCommand {
     }
 
     @Override
-    List<String> getShopNameList(List<Integer> stateList) {
-        return cashShopRepository.selectCashShopList(stateList)
+    List<String> getShopNameList(List<ShopState> shopStateList) {
+        List<Integer> shopStateNumberList = shopStateList.stream()
+                .map(ShopState::getStateNumber)
+                .toList();
+        return cashShopRepository.selectCashShopList(shopStateNumberList)
                 .stream()
                 .map(ShopDto::name)
                 .toList();
@@ -54,7 +58,7 @@ public class CashShopCommand extends ShopCommand {
                         shopDto -> String.format(
                                 "%s(%s)",
                                 shopDto.name(),
-                                parseState(shopDto.state())
+                                ShopState.of(shopDto.state()).getStateName()
                         )
                 )
                 .toList();
@@ -111,14 +115,5 @@ public class CashShopCommand extends ShopCommand {
     @Override
     int closeShop(String cashShopName) {
         return cashShopRepository.updateCashShopState(cashShopName, CLOSE_STATE);
-    }
-
-    private String parseState(int state) {
-        return switch (state) {
-            case 1 -> "닫힘";
-            case 2 -> "오픈";
-            case 3 -> "삭제됨";
-            default -> "알수없음";
-        };
     }
 }
