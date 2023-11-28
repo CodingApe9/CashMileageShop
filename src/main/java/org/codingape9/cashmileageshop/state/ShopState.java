@@ -10,6 +10,7 @@ public enum ShopState {
     public static final List<ShopState> UNOPEN_SHOP_STATE_LIST = List.of(ShopState.CLOSE_STATE);
     public static final List<ShopState> OPEN_SHOP_STATE_LIST = List.of(ShopState.OPEN_STATE);
     public static final List<ShopState> UNDELETED_SHOP_STATE_LIST = List.of(ShopState.CLOSE_STATE, ShopState.OPEN_STATE);
+    public static final List<Integer> ALL_STATE_LIST = List.of(1, 2, 3);
 
     private final int stateNumber;
     private final String stateName;
