@@ -79,17 +79,19 @@ public class CashShopCommand extends ShopCommand {
             int maxBuyableCnt,
             int maxBuyableCntServer
     ) {
-        ShopDto cashShop = cashShopRepository.selectCashShop(cashShopName);
-        ItemDto item = itemRepository.selectItemByName(itemName);
-        ShopItemDto shopItem = new ShopItemDto(
-                item.id(),
-                cashShop.id(),
+
+        ShopDto cashShop = getShopByName(cashShopName);
+        ItemDto item = getItemByName(itemName);
+
+        ShopItemDto shopItem = createShopItemDto(
+                item,
+                cashShop,
                 price,
-                1,
                 slotNumber,
                 maxBuyableCnt,
                 maxBuyableCntServer
         );
+
         return cashItemRepository.insertCashItem(shopItem);
     }
 
@@ -120,5 +122,40 @@ public class CashShopCommand extends ShopCommand {
             case 3 -> "삭제됨";
             default -> "알수없음";
         };
+    }
+
+    private ShopItemDto createShopItemDto(
+            ItemDto item,
+            ShopDto cashShop,
+            int price,
+            int slotNumber,
+            int maxBuyableCnt,
+            int maxBuyableCntServer
+    ) {
+        return new ShopItemDto(
+                item.id(),
+                cashShop.id(),
+                price,
+                1,
+                slotNumber,
+                maxBuyableCnt,
+                maxBuyableCntServer
+        );
+    }
+
+    private ShopDto getShopByName(String cashShopName) {
+        ShopDto cashShop = cashShopRepository.selectCashShop(cashShopName);
+        if (cashShop == null) {
+            throw new IllegalArgumentException("Invalid cash shop name: " + cashShopName);
+        }
+        return cashShop;
+    }
+
+    private ItemDto getItemByName(String itemName) {
+        ItemDto item = itemRepository.selectItemByName(itemName);
+        if (item == null) {
+            throw new IllegalArgumentException("Invalid item name: " + itemName);
+        }
+        return item;
     }
 }
