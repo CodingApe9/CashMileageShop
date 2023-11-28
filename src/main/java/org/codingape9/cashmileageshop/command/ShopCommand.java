@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.codingape9.cashmileageshop.dto.ItemDto;
 import org.codingape9.cashmileageshop.dto.ShopItemDto;
 import org.codingape9.cashmileageshop.repository.ItemRepository;
+import org.codingape9.cashmileageshop.state.ShopState;
 import org.codingape9.cashmileageshop.view.PlayerMessageSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,9 +27,6 @@ public abstract class ShopCommand implements TabCompleter, CommandExecutor {
     private static final int CLOSE_SHOP = 6;
     private static final List<String> CREATE_SHOP_EXTRA_COMMAND = List.of("<이름> <줄 수>");
     private static final List<String> DISPLAY_ITEM_EXTRA_COMMAND = List.of("<슬롯번호> <가격> <최대구매가능개수(개인)> <최대구매가능개수(전역)>");
-    private static final List<Integer> UNOPEN_SHOP_STATE_LIST = List.of(1);
-    private static final List<Integer> OPEN_SHOP_STATE_LIST = List.of(2);
-    private static final List<Integer> UNDELETED_SHOP_STATE_LIST = List.of(1, 2);
     private static final int NO_SUB_COMMAND = 1;
     private static final String WRONG_COMMAND = "명령어를 잘못 입력했습니다.";
     private static final String EXISTING_SHOP = "이미 존재하는 상점입니다. 상점 이름: ";
@@ -81,7 +79,7 @@ public abstract class ShopCommand implements TabCompleter, CommandExecutor {
             return CREATE_SHOP_EXTRA_COMMAND;
         }
         if (firstSubCommand.equals(FIRST_AUTOCOMPLETE.get(DELETE_SHOP))) {
-            return getShopNameList(UNDELETED_SHOP_STATE_LIST);
+            return getShopNameList(ShopState.UNDELETED_SHOP_STATE_LIST);
         }
         if (firstSubCommand.equals(FIRST_AUTOCOMPLETE.get(DISPLAY_ITEM))) {
             return getDisplayItemExtraCommand(subCommand);
@@ -93,10 +91,10 @@ public abstract class ShopCommand implements TabCompleter, CommandExecutor {
             return getShopInfoList();
         }
         if (firstSubCommand.equals(FIRST_AUTOCOMPLETE.get(OPEN_SHOP))) {
-            return getShopNameList(UNOPEN_SHOP_STATE_LIST);
+            return getShopNameList(ShopState.UNOPEN_SHOP_STATE_LIST);
         }
         if (firstSubCommand.equals(FIRST_AUTOCOMPLETE.get(CLOSE_SHOP))) {
-            return getShopNameList(OPEN_SHOP_STATE_LIST);
+            return getShopNameList(ShopState.OPEN_SHOP_STATE_LIST);
         }
 
         return EMPTY_AUTOCOMPLETE;
@@ -270,7 +268,7 @@ public abstract class ShopCommand implements TabCompleter, CommandExecutor {
         }
 
         String shopName = subCommand[1];
-        List<String> closedShopNameList = getShopNameList(UNOPEN_SHOP_STATE_LIST);
+        List<String> closedShopNameList = getShopNameList(ShopState.UNOPEN_SHOP_STATE_LIST);
         if (!closedShopNameList.contains(shopName)) {
             PlayerMessageSender.sendErrorMessage(administer, UNDEFINED_SHOP + shopName);
         }
@@ -292,7 +290,7 @@ public abstract class ShopCommand implements TabCompleter, CommandExecutor {
         }
 
         String shopName = subCommand[1];
-        List<String> openedShopNameList = getShopNameList(OPEN_SHOP_STATE_LIST);
+        List<String> openedShopNameList = getShopNameList(ShopState.OPEN_SHOP_STATE_LIST);
         if (!openedShopNameList.contains(shopName)) {
             PlayerMessageSender.sendErrorMessage(administer, UNDEFINED_SHOP + shopName);
         }
@@ -326,13 +324,13 @@ public abstract class ShopCommand implements TabCompleter, CommandExecutor {
     }
 
     private boolean isShopNameExist(String shopName) {
-        return getShopNameList(UNDELETED_SHOP_STATE_LIST).contains(shopName);
+        return getShopNameList(ShopState.UNDELETED_SHOP_STATE_LIST).contains(shopName);
     }
 
     private List<String> getDeleteItemExtraCommand(String[] subCommand) {
         int subCommandCount = subCommand.length;
         String inputShopName = subCommand[1];
-        List<String> shopNameList = getShopNameList(UNDELETED_SHOP_STATE_LIST);
+        List<String> shopNameList = getShopNameList(ShopState.UNDELETED_SHOP_STATE_LIST);
 
         if (subCommandCount > 2 && shopNameList.contains(inputShopName)) {
             return getShopItemSlotNumberList(inputShopName)
@@ -346,7 +344,7 @@ public abstract class ShopCommand implements TabCompleter, CommandExecutor {
     private List<String> getDisplayItemExtraCommand(String[] subCommand) {
         int subCommandCount = subCommand.length;
         String inputShopName = subCommand[1];
-        List<String> shopNameList = getShopNameList(UNDELETED_SHOP_STATE_LIST);
+        List<String> shopNameList = getShopNameList(ShopState.UNDELETED_SHOP_STATE_LIST);
 
         if (subCommandCount > 2 && shopNameList.contains(inputShopName)) {
             List<String> itemNameList = getItemNameList();
@@ -367,7 +365,7 @@ public abstract class ShopCommand implements TabCompleter, CommandExecutor {
                 .toList();
     }
 
-    abstract List<String> getShopNameList(List<Integer> stateList);
+    abstract List<String> getShopNameList(List<ShopState> shopStateList);
 
     abstract List<Integer> getShopItemSlotNumberList(String shopName);
 

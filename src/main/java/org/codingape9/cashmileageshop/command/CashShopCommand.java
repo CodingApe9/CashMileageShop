@@ -6,6 +6,7 @@ import org.codingape9.cashmileageshop.dto.ShopItemDto;
 import org.codingape9.cashmileageshop.repository.CashItemRepository;
 import org.codingape9.cashmileageshop.repository.CashShopRepository;
 import org.codingape9.cashmileageshop.repository.ItemRepository;
+import org.codingape9.cashmileageshop.state.ShopState;
 
 import java.util.List;
 
@@ -31,8 +32,11 @@ public class CashShopCommand extends ShopCommand {
     }
 
     @Override
-    List<String> getShopNameList(List<Integer> stateList) {
-        return cashShopRepository.selectCashShopList(stateList)
+    List<String> getShopNameList(List<ShopState> shopStateList) {
+        List<Integer> shopStateNumberList = shopStateList.stream()
+                .map(ShopState::getStateNumber)
+                .toList();
+        return cashShopRepository.selectCashShopList(shopStateNumberList)
                 .stream()
                 .map(ShopDto::name)
                 .toList();
@@ -54,7 +58,7 @@ public class CashShopCommand extends ShopCommand {
                         shopDto -> String.format(
                                 "%s(%s)",
                                 shopDto.name(),
-                                parseState(shopDto.state())
+                                ShopState.of(shopDto.state()).getStateName()
                         )
                 )
                 .toList();
@@ -79,19 +83,17 @@ public class CashShopCommand extends ShopCommand {
             int maxBuyableCnt,
             int maxBuyableCntServer
     ) {
-
-        ShopDto cashShop = getShopByName(cashShopName);
-        ItemDto item = getItemByName(itemName);
-
-        ShopItemDto shopItem = createShopItemDto(
-                item,
-                cashShop,
+        ShopDto cashShop = cashShopRepository.selectCashShop(cashShopName);
+        ItemDto item = itemRepository.selectItemByName(itemName);
+        ShopItemDto shopItem = new ShopItemDto(
+                item.id(),
+                cashShop.id(),
                 price,
+                1,
                 slotNumber,
                 maxBuyableCnt,
                 maxBuyableCntServer
         );
-
         return cashItemRepository.insertCashItem(shopItem);
     }
 
@@ -113,49 +115,5 @@ public class CashShopCommand extends ShopCommand {
     @Override
     int closeShop(String cashShopName) {
         return cashShopRepository.updateCashShopState(cashShopName, CLOSE_STATE);
-    }
-
-    private String parseState(int state) {
-        return switch (state) {
-            case 1 -> "닫힘";
-            case 2 -> "오픈";
-            case 3 -> "삭제됨";
-            default -> "알수없음";
-        };
-    }
-
-    private ShopItemDto createShopItemDto(
-            ItemDto item,
-            ShopDto cashShop,
-            int price,
-            int slotNumber,
-            int maxBuyableCnt,
-            int maxBuyableCntServer
-    ) {
-        return new ShopItemDto(
-                item.id(),
-                cashShop.id(),
-                price,
-                1,
-                slotNumber,
-                maxBuyableCnt,
-                maxBuyableCntServer
-        );
-    }
-
-    private ShopDto getShopByName(String cashShopName) {
-        ShopDto cashShop = cashShopRepository.selectCashShop(cashShopName);
-        if (cashShop == null) {
-            throw new IllegalArgumentException("Invalid cash shop name: " + cashShopName);
-        }
-        return cashShop;
-    }
-
-    private ItemDto getItemByName(String itemName) {
-        ItemDto item = itemRepository.selectItemByName(itemName);
-        if (item == null) {
-            throw new IllegalArgumentException("Invalid item name: " + itemName);
-        }
-        return item;
     }
 }
