@@ -24,8 +24,10 @@ public interface MileageShopMapper {
     @Select("SELECT * FROM mileage_shop WHERE name = #{mileageShopName}")
     ShopDto selectMileageShopByName(@Param("mileageShopName") String mileageShopName);
 
-    @Select("SELECT * FROM mileage_item WHERE mileage_shop_id = (SELECT id FROM mileage_shop WHERE name = #{mileageShopName})")
-    List<ShopItemDto> selectMileageShopItemList(@Param("mileageShopName") String mileageShopName);
+    @Select("select mileage_item.* " +
+            "from mileage_item join (select id from mileage_shop where name = #{mileageShopName}) as mileage_shop_id " +
+            "on mileage_shop_id.id = mileage_item.mileage_shop_id and state = 1;")
+    List<ShopItemDto> selectCashShopItemList(String mileageShopName);
 
     @Insert("INSERT INTO mileage_shop (name, line_num) VALUES (#{mileageShopName}, #{lineNum})")
     int insertMileageShop(@Param("shopName") String mileageShopName, @Param("lineNum") int lineNum);
@@ -33,17 +35,5 @@ public interface MileageShopMapper {
     @Update("UPDATE mileage_shop SET state = #{state} WHERE name = #{mileageShopName}")
     int updateMileageShopState(@Param("mileageShopName") String mileageShopName, @Param("state") int state);
 
-    @Insert("INSERT INTO mileage_item (max_buyable_cnt, price, item_id, mileage_shop_id, max_buyable_cnt_server, slot_num, state) " +
-            "VALUES (#{maxBuyableCnt}, #{price}, #{itemId}, #{shopId}, #{maxBuyableCntServer}, #{slotNum}, #{state})")
-    int insertMileageShopItem(@Param("maxBuyableCnt") int maxBuyableCnt,
-                              @Param("price") int price,
-                              @Param("itemId") int itemId,
-                              @Param("shopId") int shopId,
-                              @Param("maxBuyableCntServer") int maxBuyableCntServer,
-                              @Param("slotNum") int slotNum,
-                              @Param("state") int state);
 
-
-    @Update("UPDATE mileage_item SET state = #{state} WHERE id = #{itemId}")
-    int updateMileageShopItemState(@Param("itemId") int itemId, @Param("state") int state);
 }
