@@ -28,7 +28,7 @@ public abstract class ShopGui {
             Component.text(""),
             Component.text("§7§m                                                §7")
     );
-    private static final int NO_BUYABLE_LIMTED = -1;
+    private static final int NO_BUYABLE_LIMITED = -1;
     private static final String NO_INFO = "";
 
     private String name;
@@ -74,7 +74,7 @@ public abstract class ShopGui {
     }
 
     private String getBuyableStateInfo(ItemInfoDto itemInfoDto, UUID uuid) {
-        if (itemInfoDto.maxBuyableCnt() == NO_BUYABLE_LIMTED) {
+        if (itemInfoDto.maxBuyableCnt() == NO_BUYABLE_LIMITED) {
             return NO_INFO;
         }
         int buyCnt = getBuyCnt(uuid, itemInfoDto);
@@ -84,7 +84,7 @@ public abstract class ShopGui {
     }
 
     private String getServerBuyableStateInfo(ItemInfoDto itemInfoDto, UUID uuid) {
-        if (itemInfoDto.maxBuyableCntServer() == NO_BUYABLE_LIMTED) {
+        if (itemInfoDto.maxBuyableCntServer() == NO_BUYABLE_LIMITED) {
             return NO_INFO;
         }
         int buyCnt = getServerBuyCnt(uuid, itemInfoDto);
