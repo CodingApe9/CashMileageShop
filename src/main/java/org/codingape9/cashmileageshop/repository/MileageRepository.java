@@ -32,7 +32,7 @@ public class MileageRepository {
 
         try (SqlSession session = sqlSessionFactory.getSession()) {
             MileageShopMapper mapper = session.getMapper(MileageShopMapper.class);
-            shopItemDtoList = mapper.selectMileageShopItemList(mileageShopName);
+            shopItemDtoList = mapper.selectCashShopItemList(mileageShopName);
         } catch (Exception sqlException) {
             return null;
         }
