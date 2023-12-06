@@ -32,5 +32,4 @@ public interface MileageShopMapper {
     @Update("UPDATE mileage_shop SET state = #{state} WHERE name = #{mileageShopName}")
     int updateMileageShopState(@Param("mileageShopName") String mileageShopName, @Param("state") int state);
 
-
 }

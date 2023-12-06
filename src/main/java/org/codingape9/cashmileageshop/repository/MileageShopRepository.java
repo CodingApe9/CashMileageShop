@@ -7,10 +7,10 @@ import org.codingape9.cashmileageshop.dto.ShopItemDto;
 import org.codingape9.cashmileageshop.manager.MyBatisManager;
 import org.codingape9.cashmileageshop.mapper.MileageShopMapper;
 
-public class MileageRepository {
+public class MileageShopRepository {
     private final MyBatisManager sqlSessionFactory;
 
-    public MileageRepository(MyBatisManager sqlSessionFactory) {
+    public MileageShopRepository(MyBatisManager sqlSessionFactory) {
         this.sqlSessionFactory = sqlSessionFactory;
     }
 
