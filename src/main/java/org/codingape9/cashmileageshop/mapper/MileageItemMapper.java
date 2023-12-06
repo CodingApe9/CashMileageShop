@@ -8,8 +8,6 @@ import org.apache.ibatis.annotations.Update;
 import org.codingape9.cashmileageshop.dto.ShopItemDto;
 
 public interface MileageItemMapper {
-
-
     @Insert("INSERT INTO mileage_item (item_id, mileage_shop_id, price, slot_num, max_buyable_cnt, max_buyable_cnt_server) " +
             "VALUES (#{itemId}, #{shopId}, #{price}, #{slotNum}, #{maxBuyableCnt}, #{maxBuyableCntServer})")
     int insertMileageShopItem(ShopItemDto mileageShopItem);
