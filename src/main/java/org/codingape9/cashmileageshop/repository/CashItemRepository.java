@@ -5,6 +5,7 @@ import org.codingape9.cashmileageshop.dto.ShopItemDto;
 import org.codingape9.cashmileageshop.manager.MyBatisManager;
 import org.codingape9.cashmileageshop.mapper.CashItemMapper;
 
+import java.util.Collections;
 import java.util.List;
 
 public class CashItemRepository implements ShopItemRepository {
@@ -50,7 +51,7 @@ public class CashItemRepository implements ShopItemRepository {
             CashItemMapper mapper = session.getMapper(CashItemMapper.class);
             cashItemList = mapper.selectCashItemList(cashShopName);
         } catch (Exception sqlException) {
-            return null;
+            return Collections.emptyList();
         }
 
         return cashItemList;

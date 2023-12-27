@@ -45,6 +45,8 @@ public class UserRepository {
         try (SqlSession session = sqlSessionFactory.getSession()) {
             UserMapper mapper = session.getMapper(UserMapper.class);
             updateRowCount = mapper.updateUserCash(uuid.toString(), cash);
+        } catch (Exception sqlException) {
+            return 0;
         }
 
         return updateRowCount;

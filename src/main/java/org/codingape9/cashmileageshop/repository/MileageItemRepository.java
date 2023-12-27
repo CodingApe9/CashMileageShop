@@ -1,5 +1,6 @@
 package org.codingape9.cashmileageshop.repository;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
@@ -50,7 +51,7 @@ public class MileageItemRepository implements ShopItemRepository {
             MileageItemMapper mapper = session.getMapper(MileageItemMapper.class);
             mileageItemList = mapper.selectMileageShopItemList(mileageShopName);
         } catch (Exception sqlException) {
-            return null;
+            return Collections.emptyList();
         }
 
         return mileageItemList;

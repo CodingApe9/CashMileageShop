@@ -155,7 +155,7 @@ public class ShopCommand implements TabCompleter, CommandExecutor {
             PlayerMessageSender.sendErrorMessage(administer, EXISTING_SHOP + shopName);
             return false;
         }
-        int insertShopCount = createShop(shopName, lineNum);
+        int insertShopCount = shopRepository.insertShop(shopName, lineNum);
         if (insertShopCount == 0) {
             PlayerMessageSender.sendErrorMessage(administer, FAIL_INSERT_SHOP + shopName);
             return false;
@@ -373,10 +373,6 @@ public class ShopCommand implements TabCompleter, CommandExecutor {
                 .stream()
                 .map(shopDto -> String.format("%s(%s)", shopDto.name(), ShopState.of(shopDto.state()).getStateName()))
                 .toList();
-    }
-
-    int createShop(String shopName, int lineNum) {
-        return shopRepository.insertShop(shopName, lineNum);
     }
 
     int deleteShop(String shopName) {
