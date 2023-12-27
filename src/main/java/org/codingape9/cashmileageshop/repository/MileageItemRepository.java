@@ -29,12 +29,12 @@ public class MileageItemRepository implements ShopItemRepository {
     }
 
     @Override
-    public int updateShopItemState(String shopName, int slotNumber, int state) {
+    public int updateShopItemState(String mileageShopName, int slotNumber, int state) {
         int updateMileageItemCount;
 
         try (SqlSession session = sqlSessionFactory.getSession()) {
             MileageItemMapper mapper = session.getMapper(MileageItemMapper.class);
-            updateMileageItemCount = mapper.updateMileageShopItemState(shopName, slotNumber, state);
+            updateMileageItemCount = mapper.updateMileageShopItemState(mileageShopName, slotNumber, state);
         } catch (Exception sqlException) {
             return 0;
         }
@@ -43,12 +43,12 @@ public class MileageItemRepository implements ShopItemRepository {
     }
 
     @Override
-    public List<ShopItemDto> selectShopItemList(String shopName) {
+    public List<ShopItemDto> selectShopItemList(String mileageShopName) {
         List<ShopItemDto> mileageItemList;
 
         try (SqlSession session = sqlSessionFactory.getSession()) {
             MileageItemMapper mapper = session.getMapper(MileageItemMapper.class);
-            mileageItemList = mapper.selectMileageShopItemList(shopName);
+            mileageItemList = mapper.selectMileageShopItemList(mileageShopName);
         } catch (Exception sqlException) {
             return null;
         }

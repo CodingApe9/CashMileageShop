@@ -29,12 +29,12 @@ public class CashItemRepository implements ShopItemRepository {
     }
 
     @Override
-    public int updateShopItemState(String shopName, int slotNumber, int state) {
+    public int updateShopItemState(String cashShopName, int slotNumber, int state) {
         int updateCashItemCount;
 
         try (SqlSession session = sqlSessionFactory.getSession()) {
             CashItemMapper mapper = session.getMapper(CashItemMapper.class);
-            updateCashItemCount = mapper.updateCashItemState(shopName, slotNumber, state);
+            updateCashItemCount = mapper.updateCashItemState(cashShopName, slotNumber, state);
         } catch (Exception sqlException) {
             return 0;
         }
@@ -43,12 +43,12 @@ public class CashItemRepository implements ShopItemRepository {
     }
 
     @Override
-    public List<ShopItemDto> selectShopItemList(String shopName) {
+    public List<ShopItemDto> selectShopItemList(String cashShopName) {
         List<ShopItemDto> cashItemList;
 
         try (SqlSession session = sqlSessionFactory.getSession()) {
             CashItemMapper mapper = session.getMapper(CashItemMapper.class);
-            cashItemList = mapper.selectCashItemList(shopName);
+            cashItemList = mapper.selectCashItemList(cashShopName);
         } catch (Exception sqlException) {
             return null;
         }

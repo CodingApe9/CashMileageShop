@@ -24,10 +24,10 @@ public interface MileageShopMapper {
     @Select("select mileage_item.* " +
             "from mileage_item join (select id from mileage_shop where name = #{mileageShopName}) as mileage_shop_id " +
             "on mileage_shop_id.id = mileage_item.mileage_shop_id and state = 1;")
-    List<ShopItemDto> selectCashShopItemList(String mileageShopName);
+    List<ShopItemDto> selectMileageShopItemList(String mileageShopName);
 
     @Insert("INSERT INTO mileage_shop (name, line_num) VALUES (#{mileageShopName}, #{lineNum})")
-    int insertMileageShop(@Param("shopName") String mileageShopName, @Param("lineNum") int lineNum);
+    int insertMileageShop(@Param("mileageShopName") String mileageShopName, @Param("lineNum") int lineNum);
 
     @Update("UPDATE mileage_shop SET state = #{state} WHERE name = #{mileageShopName}")
     int updateMileageShopState(@Param("mileageShopName") String mileageShopName, @Param("state") int state);
