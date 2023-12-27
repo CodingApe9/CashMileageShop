@@ -8,7 +8,9 @@ import org.bukkit.entity.Player;
 import org.codingape9.cashmileageshop.dto.ItemDto;
 import org.codingape9.cashmileageshop.dto.ShopDto;
 import org.codingape9.cashmileageshop.dto.ShopItemDto;
-import org.codingape9.cashmileageshop.repository.*;
+import org.codingape9.cashmileageshop.repository.ItemRepository;
+import org.codingape9.cashmileageshop.repository.ShopItemRepository;
+import org.codingape9.cashmileageshop.repository.ShopRepository;
 import org.codingape9.cashmileageshop.state.ShopState;
 import org.codingape9.cashmileageshop.view.PlayerMessageSender;
 import org.jetbrains.annotations.NotNull;
@@ -151,7 +153,7 @@ public class ShopCommand implements TabCompleter, CommandExecutor {
 
         String shopName = subCommand[1];
         int lineNum = Integer.parseInt(subCommand[2]);
-        if (isShopNameExist(shopName)) {
+        if (getShopNameList(ShopState.ALL_STATE_LIST).contains(shopName)) {
             PlayerMessageSender.sendErrorMessage(administer, EXISTING_SHOP + shopName);
             return false;
         }
@@ -247,7 +249,7 @@ public class ShopCommand implements TabCompleter, CommandExecutor {
             return false;
         }
         String shopName = getShopName(subCommand[1]);
-        if (!isShopNameExist(shopName)) {
+        if (!getShopNameList(ShopState.ALL_STATE_LIST).contains(shopName)) {
             PlayerMessageSender.sendErrorMessage(administer, UNDELETEABLE_SHOP + shopName);
             return false;
         }
@@ -369,7 +371,11 @@ public class ShopCommand implements TabCompleter, CommandExecutor {
     }
 
     List<String> getShopInfoList() {
-        return shopRepository.selectShopList(ShopState.ALL_STATE_LIST)
+        List<Integer> allStateNumberList = ShopState.ALL_STATE_LIST
+                .stream()
+                .map(ShopState::getStateNumber)
+                .toList();
+        return shopRepository.selectShopList(allStateNumberList)
                 .stream()
                 .map(shopDto -> String.format("%s(%s)", shopDto.name(), ShopState.of(shopDto.state()).getStateName()))
                 .toList();

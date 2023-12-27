@@ -7,10 +7,10 @@ public enum ShopState {
     OPEN_STATE(2, "오픈"),
     DELETE_STATE(3, "삭제됨");
 
-    public static final List<ShopState> UNOPEN_SHOP_STATE_LIST = List.of(ShopState.CLOSE_STATE);
-    public static final List<ShopState> OPEN_SHOP_STATE_LIST = List.of(ShopState.OPEN_STATE);
-    public static final List<ShopState> UNDELETED_SHOP_STATE_LIST = List.of(ShopState.CLOSE_STATE, ShopState.OPEN_STATE);
-    public static final List<Integer> ALL_STATE_LIST = List.of(1, 2, 3);
+    public static final List<ShopState> UNOPEN_SHOP_STATE_LIST = List.of(CLOSE_STATE);
+    public static final List<ShopState> OPEN_SHOP_STATE_LIST = List.of(OPEN_STATE);
+    public static final List<ShopState> UNDELETED_SHOP_STATE_LIST = List.of(CLOSE_STATE, OPEN_STATE);
+    public static final List<ShopState> ALL_STATE_LIST = List.of(CLOSE_STATE, OPEN_STATE, DELETE_STATE);
 
     private final int stateNumber;
     private final String stateName;
