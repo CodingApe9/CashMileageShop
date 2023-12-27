@@ -3,10 +3,7 @@ package org.codingape9.cashmileageshop.manager;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.codingape9.cashmileageshop.mapper.CashItemMapper;
-import org.codingape9.cashmileageshop.mapper.CashShopMapper;
-import org.codingape9.cashmileageshop.mapper.ItemMapper;
-import org.codingape9.cashmileageshop.mapper.UserMapper;
+import org.codingape9.cashmileageshop.mapper.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -32,6 +29,8 @@ public class MyBatisManager {
         sessionFactory.getConfiguration().addMapper(ItemMapper.class);
         sessionFactory.getConfiguration().addMapper(CashShopMapper.class);
         sessionFactory.getConfiguration().addMapper(CashItemMapper.class);
+        sessionFactory.getConfiguration().addMapper(MileageShopMapper.class);
+        sessionFactory.getConfiguration().addMapper(MileageItemMapper.class);
     }
 
     public SqlSession getSession() {
