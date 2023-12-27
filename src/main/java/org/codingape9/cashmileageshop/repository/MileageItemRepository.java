@@ -7,19 +7,20 @@ import org.codingape9.cashmileageshop.dto.ShopItemDto;
 import org.codingape9.cashmileageshop.manager.MyBatisManager;
 import org.codingape9.cashmileageshop.mapper.MileageItemMapper;
 
-public class MileageItemRepository {
+public class MileageItemRepository implements ShopItemRepository {
     private final MyBatisManager sqlSessionFactory;
 
     public MileageItemRepository(MyBatisManager sqlSessionFactory) {
         this.sqlSessionFactory = sqlSessionFactory;
     }
 
-    public int insertMileageItem(ShopItemDto mileageShopItem) {
+    @Override
+    public int insertShopItem(ShopItemDto shopItem) {
         int insertMileageItemCount;
 
         try (SqlSession session = sqlSessionFactory.getSession()) {
             MileageItemMapper mapper = session.getMapper(MileageItemMapper.class);
-            insertMileageItemCount = mapper.insertMileageShopItem(mileageShopItem);
+            insertMileageItemCount = mapper.insertMileageShopItem(shopItem);
         } catch (Exception sqlException) {
             return 0;
         }
@@ -27,12 +28,13 @@ public class MileageItemRepository {
         return insertMileageItemCount;
     }
 
-    public int updateMileageItemState(String mileageShopName, int slotNumber, int state) {
+    @Override
+    public int updateShopItemState(String shopName, int slotNumber, int state) {
         int updateMileageItemCount;
 
         try (SqlSession session = sqlSessionFactory.getSession()) {
             MileageItemMapper mapper = session.getMapper(MileageItemMapper.class);
-            updateMileageItemCount = mapper.updateMileageShopItemState(mileageShopName, slotNumber, state);
+            updateMileageItemCount = mapper.updateMileageShopItemState(shopName, slotNumber, state);
         } catch (Exception sqlException) {
             return 0;
         }
@@ -40,12 +42,13 @@ public class MileageItemRepository {
         return updateMileageItemCount;
     }
 
-    public List<ShopItemDto> selectMileageItemList(String mileageShopName) {
+    @Override
+    public List<ShopItemDto> selectShopItemList(String shopName) {
         List<ShopItemDto> mileageItemList;
 
         try (SqlSession session = sqlSessionFactory.getSession()) {
             MileageItemMapper mapper = session.getMapper(MileageItemMapper.class);
-            mileageItemList = mapper.selectMileageShopItemList(mileageShopName);
+            mileageItemList = mapper.selectMileageShopItemList(shopName);
         } catch (Exception sqlException) {
             return null;
         }

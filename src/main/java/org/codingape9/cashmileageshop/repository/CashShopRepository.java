@@ -8,14 +8,15 @@ import org.codingape9.cashmileageshop.mapper.CashShopMapper;
 
 import java.util.List;
 
-public class CashShopRepository {
+public class CashShopRepository implements ShopRepository {
     private final MyBatisManager sqlSessionFactory;
 
     public CashShopRepository(MyBatisManager sqlSessionFactory) {
         this.sqlSessionFactory = sqlSessionFactory;
     }
 
-    public List<ShopDto> selectCashShopList(List<Integer> stateList) {
+    @Override
+    public List<ShopDto> selectShopList(List<Integer> stateList) {
         List<ShopDto> shopDtoList;
 
         try (SqlSession session = sqlSessionFactory.getSession()) {
@@ -28,12 +29,13 @@ public class CashShopRepository {
         return shopDtoList;
     }
 
-    public List<ShopItemDto> selectCashShopItemList(String cashShopName) {
+    @Override
+    public List<ShopItemDto> selectShopItemList(String shopName) {
         List<ShopItemDto> shopItemDtoList;
 
         try (SqlSession session = sqlSessionFactory.getSession()) {
             CashShopMapper mapper = session.getMapper(CashShopMapper.class);
-            shopItemDtoList = mapper.selectCashShopItemList(cashShopName);
+            shopItemDtoList = mapper.selectCashShopItemList(shopName);
         } catch (Exception sqlException) {
             return null;
         }
@@ -41,12 +43,13 @@ public class CashShopRepository {
         return shopItemDtoList;
     }
 
-    public ShopDto selectCashShop(String cashShopName) {
+    @Override
+    public ShopDto selectShop(String shopName) {
         ShopDto shopDto;
 
         try (SqlSession session = sqlSessionFactory.getSession()) {
             CashShopMapper mapper = session.getMapper(CashShopMapper.class);
-            shopDto = mapper.selectCashShop(cashShopName);
+            shopDto = mapper.selectCashShop(shopName);
         } catch (Exception sqlException) {
             return null;
         }
@@ -54,12 +57,13 @@ public class CashShopRepository {
         return shopDto;
     }
 
-    public int insertCashShop(String cashShopName, int lineNum) {
+    @Override
+    public int insertShop(String shopName, int lineNum) {
         int insertCashShopCount;
 
         try (SqlSession session = sqlSessionFactory.getSession()) {
             CashShopMapper mapper = session.getMapper(CashShopMapper.class);
-            insertCashShopCount = mapper.insertCashShop(cashShopName, lineNum);
+            insertCashShopCount = mapper.insertCashShop(shopName, lineNum);
         } catch (Exception sqlException) {
             return 0;
         }
@@ -67,12 +71,13 @@ public class CashShopRepository {
         return insertCashShopCount;
     }
 
-    public int updateCashShopState(String cashShopName, int state) {
+    @Override
+    public int updateShopState(String shopName, int state) {
         int deleteCashShopCount;
 
         try (SqlSession session = sqlSessionFactory.getSession()) {
             CashShopMapper mapper = session.getMapper(CashShopMapper.class);
-            deleteCashShopCount = mapper.updateCashShopState(cashShopName, state);
+            deleteCashShopCount = mapper.updateCashShopState(shopName, state);
         } catch (Exception sqlException) {
             return 0;
         }

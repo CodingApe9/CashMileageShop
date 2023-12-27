@@ -7,14 +7,15 @@ import org.codingape9.cashmileageshop.dto.ShopItemDto;
 import org.codingape9.cashmileageshop.manager.MyBatisManager;
 import org.codingape9.cashmileageshop.mapper.MileageShopMapper;
 
-public class MileageShopRepository {
+public class MileageShopRepository implements ShopRepository {
     private final MyBatisManager sqlSessionFactory;
 
     public MileageShopRepository(MyBatisManager sqlSessionFactory) {
         this.sqlSessionFactory = sqlSessionFactory;
     }
 
-    public List<ShopDto> selectMileageShopList(List<Integer> stateList) {
+    @Override
+    public List<ShopDto> selectShopList(List<Integer> stateList) {
         List<ShopDto> shopDtoList;
 
         try (SqlSession session = sqlSessionFactory.getSession()) {
@@ -27,12 +28,13 @@ public class MileageShopRepository {
         return shopDtoList;
     }
 
-    public List<ShopItemDto> selectMileageItemShop(String mileageShopName) {
+    @Override
+    public List<ShopItemDto> selectShopItemList(String shopName) {
         List<ShopItemDto> shopItemDtoList;
 
         try (SqlSession session = sqlSessionFactory.getSession()) {
             MileageShopMapper mapper = session.getMapper(MileageShopMapper.class);
-            shopItemDtoList = mapper.selectCashShopItemList(mileageShopName);
+            shopItemDtoList = mapper.selectCashShopItemList(shopName);
         } catch (Exception sqlException) {
             return null;
         }
@@ -40,12 +42,13 @@ public class MileageShopRepository {
         return shopItemDtoList;
     }
 
-    public ShopDto selectMileageShop(String mileageShopName) {
+    @Override
+    public ShopDto selectShop(String shopName) {
         ShopDto shopDto;
 
         try (SqlSession session = sqlSessionFactory.getSession()) {
             MileageShopMapper mapper = session.getMapper(MileageShopMapper.class);
-            shopDto = mapper.selectMileageShopByName(mileageShopName);
+            shopDto = mapper.selectMileageShopByName(shopName);
         } catch (Exception sqlException) {
             return null;
         }
@@ -53,12 +56,13 @@ public class MileageShopRepository {
         return shopDto;
     }
 
-    public int insertMileageShop(String mileageShopName, int lineNum) {
+    @Override
+    public int insertShop(String shopName, int lineNum) {
         int insertMileageShopCount;
 
         try (SqlSession session = sqlSessionFactory.getSession()) {
             MileageShopMapper mapper = session.getMapper(MileageShopMapper.class);
-            insertMileageShopCount = mapper.insertMileageShop(mileageShopName, lineNum);
+            insertMileageShopCount = mapper.insertMileageShop(shopName, lineNum);
         } catch (Exception sqlException) {
             return 0;
         }
@@ -66,17 +70,17 @@ public class MileageShopRepository {
         return insertMileageShopCount;
     }
 
-    public int updateMileageShopState(String mileageShopName, int state) {
+    @Override
+    public int updateShopState(String shopName, int state) {
         int updateMileageShopCount;
 
         try (SqlSession session = sqlSessionFactory.getSession()) {
             MileageShopMapper mapper = session.getMapper(MileageShopMapper.class);
-            updateMileageShopCount = mapper.updateMileageShopState(mileageShopName, state);
+            updateMileageShopCount = mapper.updateMileageShopState(shopName, state);
         } catch (Exception sqlException) {
             return 0;
         }
 
         return updateMileageShopCount;
     }
-
 }

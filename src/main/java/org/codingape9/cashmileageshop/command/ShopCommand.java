@@ -6,8 +6,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.codingape9.cashmileageshop.dto.ItemDto;
+import org.codingape9.cashmileageshop.dto.ShopDto;
 import org.codingape9.cashmileageshop.dto.ShopItemDto;
-import org.codingape9.cashmileageshop.repository.ItemRepository;
+import org.codingape9.cashmileageshop.repository.*;
 import org.codingape9.cashmileageshop.state.ShopState;
 import org.codingape9.cashmileageshop.view.PlayerMessageSender;
 import org.jetbrains.annotations.NotNull;
@@ -15,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public abstract class ShopCommand implements TabCompleter, CommandExecutor {
+public class ShopCommand implements TabCompleter, CommandExecutor {
     private static final List<String> EMPTY_AUTOCOMPLETE = List.of();
     private static final List<String> FIRST_AUTOCOMPLETE = List.of("생성", "삭제", "진열", "아이템삭제", "목록", "오픈", "닫기");
     private static final int CREATE_SHOP = 0;
@@ -47,19 +48,18 @@ public abstract class ShopCommand implements TabCompleter, CommandExecutor {
     private static final String SUCCESS_DELETE_ITEM_IN_SHOP = "아이템을 삭제했습니다. [상점 이름: %s 아이템 이름: %s]";
     private static final String SUCCESS_CLOSE_SHOP = "상점을 닫았습니다. 상점 이름: ";
 
+    private final ShopRepository shopRepository;
+    private final ShopItemRepository shopItemRepository;
     private final ItemRepository itemRepository;
 
-    protected ShopCommand(ItemRepository itemRepository) {
+    public ShopCommand(ShopRepository shopRepository, ShopItemRepository shopItemRepository, ItemRepository itemRepository) {
+        this.shopRepository = shopRepository;
+        this.shopItemRepository = shopItemRepository;
         this.itemRepository = itemRepository;
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            @NotNull String[] subCommand
-    ) {
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] subCommand) {
         Player player = (Player) sender;
         if (!player.isOp()) {
             return EMPTY_AUTOCOMPLETE;
@@ -101,12 +101,7 @@ public abstract class ShopCommand implements TabCompleter, CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            @NotNull String[] subCommand
-    ) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] subCommand) {
         Player player = (Player) sender;
         if (!player.isOp()) {
             return false;
@@ -307,16 +302,12 @@ public abstract class ShopCommand implements TabCompleter, CommandExecutor {
         List<ShopItemDto> shopItemList = getShopItemList(shopName);
         StringBuilder shopItemInfo = new StringBuilder();
         shopItemInfo.append(shopName).append("의 아이템 목록\n");
-        shopItemList.forEach(
-                shopItem -> shopItemInfo.append(shopItem.toString()).append("\n")
-        );
+        shopItemList.forEach(shopItem -> shopItemInfo.append(shopItem.toString()).append("\n"));
         return shopItemInfo.toString();
     }
 
     private String getShopName(String shopNameInfo) {
-        return shopNameInfo.replace("(닫힘)", "")
-                .replace("(오픈)", "")
-                .replace("(삭제됨)", "");
+        return shopNameInfo.replace("(닫힘)", "").replace("(오픈)", "").replace("(삭제됨)", "");
     }
 
     private boolean isItemExist(String itemName) {
@@ -333,10 +324,7 @@ public abstract class ShopCommand implements TabCompleter, CommandExecutor {
         List<String> shopNameList = getShopNameList(ShopState.UNDELETED_SHOP_STATE_LIST);
 
         if (subCommandCount > 2 && shopNameList.contains(inputShopName)) {
-            return getShopItemSlotNumberList(inputShopName)
-                    .stream()
-                    .map(String::valueOf)
-                    .toList();
+            return getShopItemSlotNumberList(inputShopName).stream().map(String::valueOf).toList();
         }
         return shopNameList;
     }
@@ -360,28 +348,69 @@ public abstract class ShopCommand implements TabCompleter, CommandExecutor {
 
     private List<String> getItemNameList() {
         List<ItemDto> itemDtoList = itemRepository.selectItem();
-        return itemDtoList.stream()
-                .map(ItemDto::name)
+        return itemDtoList.stream().map(ItemDto::name).toList();
+    }
+
+    List<String> getShopNameList(List<ShopState> shopStateList) {
+        List<Integer> shopStateNumberList = shopStateList.stream()
+                .map(ShopState::getStateNumber)
+                .toList();
+        return shopRepository.selectShopList(shopStateNumberList)
+                .stream()
+                .map(ShopDto::name)
                 .toList();
     }
 
-    abstract List<String> getShopNameList(List<ShopState> shopStateList);
+    List<Integer> getShopItemSlotNumberList(String shopName) {
+        return shopRepository.selectShopItemList(shopName)
+                .stream()
+                .map(ShopItemDto::slotNum)
+                .toList();
+    }
 
-    abstract List<Integer> getShopItemSlotNumberList(String shopName);
+    List<String> getShopInfoList() {
+        return shopRepository.selectShopList(ShopState.ALL_STATE_LIST)
+                .stream()
+                .map(shopDto -> String.format("%s(%s)", shopDto.name(), ShopState.of(shopDto.state()).getStateName()))
+                .toList();
+    }
 
-    abstract List<String> getShopInfoList();
+    int createShop(String shopName, int lineNum) {
+        return shopRepository.insertShop(shopName, lineNum);
+    }
 
-    abstract int createShop(String shopName, int lineNum);
+    int deleteShop(String shopName) {
+        return shopRepository.updateShopState(shopName, ShopState.DELETE_STATE.getStateNumber());
+    }
 
-    abstract int deleteShop(String shopName);
+    int displayShopItem(String shopName, String itemName, int slotNumber, int price, int maxBuyableCnt, int maxBuyableCntServer) {
+        ShopDto cashShop = shopRepository.selectShop(shopName);
+        ItemDto item = itemRepository.selectItemByName(itemName);
+        ShopItemDto shopItem = new ShopItemDto(
+                item.id(),
+                cashShop.id(),
+                price,
+                ShopState.CLOSE_STATE.getStateNumber(),
+                slotNumber,
+                maxBuyableCnt,
+                maxBuyableCntServer
+        );
+        return shopItemRepository.insertShopItem(shopItem);
+    }
 
-    abstract int displayShopItem(String shopName, String itemName, int slotNumber, int price, int maxBuyableCnt, int maxBuyableCntServer);
+    int deleteShopItem(String shopName, int slotNumber) {
+        return shopItemRepository.updateShopItemState(shopName, slotNumber, ShopState.DELETE_STATE.getStateNumber());
+    }
 
-    abstract int deleteShopItem(String shopName, int slotNumber);
+    List<ShopItemDto> getShopItemList(String shopName) {
+        return shopItemRepository.selectShopItemList(shopName);
+    }
 
-    abstract List<ShopItemDto> getShopItemList(String shopName);
+    int openShop(String shopName) {
+        return shopRepository.updateShopState(shopName, ShopState.OPEN_STATE.getStateNumber());
+    }
 
-    abstract int openShop(String shopName);
-
-    abstract int closeShop(String shopName);
+    int closeShop(String shopName) {
+        return shopRepository.updateShopState(shopName, ShopState.CLOSE_STATE.getStateNumber());
+    }
 }

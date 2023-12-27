@@ -2,16 +2,13 @@ package org.codingape9.cashmileageshop;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import org.codingape9.cashmileageshop.command.CashCommand;
-import org.codingape9.cashmileageshop.command.CashShopCommand;
 import org.codingape9.cashmileageshop.command.ItemRegisterCommand;
 import org.codingape9.cashmileageshop.command.MileageCommand;
+import org.codingape9.cashmileageshop.command.ShopCommand;
 import org.codingape9.cashmileageshop.listener.CheckPlayerInDBListener;
 import org.codingape9.cashmileageshop.manager.MyBatisManager;
 import org.codingape9.cashmileageshop.manager.PropertyManager;
-import org.codingape9.cashmileageshop.repository.CashItemRepository;
-import org.codingape9.cashmileageshop.repository.CashShopRepository;
-import org.codingape9.cashmileageshop.repository.ItemRepository;
-import org.codingape9.cashmileageshop.repository.UserRepository;
+import org.codingape9.cashmileageshop.repository.*;
 import org.codingape9.cashmileageshop.view.ServerConsole;
 
 import java.io.File;
@@ -33,14 +30,20 @@ public final class CashMileageShop extends JavaPlugin {
         propertyManager.loadProperties();
 
         getCommand("아이템등록").setExecutor(new ItemRegisterCommand(new ItemRepository(MYBATIS_MANAGER)));
+
         getCommand("캐시").setExecutor(new CashCommand(new UserRepository(MYBATIS_MANAGER)));
-        getCommand("캐시샵").setExecutor(new CashShopCommand(
-                new ItemRepository(MYBATIS_MANAGER),
+        getCommand("캐시샵").setExecutor(new ShopCommand(
                 new CashShopRepository(MYBATIS_MANAGER),
-                new CashItemRepository(MYBATIS_MANAGER))
-        );
+                new CashItemRepository(MYBATIS_MANAGER),
+                new ItemRepository(MYBATIS_MANAGER)
+        ));
 
         getCommand("마일리지").setExecutor(new MileageCommand(new UserRepository(MYBATIS_MANAGER)));
+        getCommand("마일리지샵").setExecutor(new ShopCommand(
+                new MileageShopRepository(MYBATIS_MANAGER),
+                new MileageItemRepository(MYBATIS_MANAGER),
+                new ItemRepository(MYBATIS_MANAGER)
+        ));
 
         getServer().getPluginManager().registerEvents(new CheckPlayerInDBListener(new UserRepository(MYBATIS_MANAGER)), this);
 
