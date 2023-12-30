@@ -1,5 +1,8 @@
 package org.codingape9.cashmileageshop.command;
 
+import static org.codingape9.cashmileageshop.util.validator.ShopCommandValidator.hasAdminPrivileges;
+import static org.codingape9.cashmileageshop.util.validator.ShopCommandValidator.hasValidSubCommandLength;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -54,21 +57,22 @@ public class ShopCommand implements TabCompleter, CommandExecutor {
     private final ShopItemRepository shopItemRepository;
     private final ItemRepository itemRepository;
 
-    public ShopCommand(ShopRepository shopRepository, ShopItemRepository shopItemRepository, ItemRepository itemRepository) {
+    public ShopCommand(ShopRepository shopRepository, ShopItemRepository shopItemRepository,
+                       ItemRepository itemRepository) {
         this.shopRepository = shopRepository;
         this.shopItemRepository = shopItemRepository;
         this.itemRepository = itemRepository;
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] subCommand) {
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command,
+                                                @NotNull String label, @NotNull String[] subCommand) {
         Player player = (Player) sender;
-        if (!player.isOp()) {
+        if (!hasAdminPrivileges(player)) {
             return EMPTY_AUTOCOMPLETE;
         }
-        int subCommandCount = subCommand.length;
 
-        if (subCommandCount == NO_SUB_COMMAND) {
+        if (hasValidSubCommandLength(subCommand, NO_SUB_COMMAND)) {
             return FIRST_AUTOCOMPLETE;
         }
 
@@ -103,14 +107,15 @@ public class ShopCommand implements TabCompleter, CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] subCommand) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label,
+                             @NotNull String[] subCommand) {
         Player player = (Player) sender;
-        if (!player.isOp()) {
+        if (!hasAdminPrivileges(player)) {
             return false;
         }
         Player administer = player;
-        int subCommandCount = subCommand.length;
-        if (subCommandCount == 0) {
+
+        if (hasValidSubCommandLength(subCommand, NO_SUB_COMMAND)) {
             PlayerMessageSender.sendErrorMessage(administer, WRONG_COMMAND);
             return false;
         }
@@ -145,8 +150,7 @@ public class ShopCommand implements TabCompleter, CommandExecutor {
     }
 
     private boolean executeCreateShop(Player administer, String[] subCommand) {
-        int subCommandCount = subCommand.length;
-        if (subCommandCount != 3) {
+        if (!hasValidSubCommandLength(subCommand, 3)) {
             PlayerMessageSender.sendErrorMessage(administer, WRONG_COMMAND);
             return false;
         }
@@ -167,8 +171,7 @@ public class ShopCommand implements TabCompleter, CommandExecutor {
     }
 
     private boolean executeDeleteShop(Player administer, String[] subCommand) {
-        int subCommandCount = subCommand.length;
-        if (subCommandCount != 2) {
+        if (!hasValidSubCommandLength(subCommand, 2)) {
             PlayerMessageSender.sendErrorMessage(administer, WRONG_COMMAND);
             return false;
         }
@@ -187,8 +190,7 @@ public class ShopCommand implements TabCompleter, CommandExecutor {
     }
 
     private boolean executeDisplayItem(Player administer, String[] subCommand) {
-        int subCommandCount = subCommand.length;
-        if (subCommandCount != 7) {
+        if (!hasValidSubCommandLength(subCommand, 7)) {
             PlayerMessageSender.sendErrorMessage(administer, WRONG_COMMAND);
             return false;
         }
@@ -207,7 +209,8 @@ public class ShopCommand implements TabCompleter, CommandExecutor {
         int maxBuyableCnt = Integer.parseInt(subCommand[5]);
         int maxBuyableCntServer = Integer.parseInt(subCommand[6]);
 
-        int displayShopItemCount = displayShopItem(shopName, itemName, slotNumber, price, maxBuyableCnt, maxBuyableCntServer);
+        int displayShopItemCount = displayShopItem(shopName, itemName, slotNumber, price, maxBuyableCnt,
+                maxBuyableCntServer);
         if (displayShopItemCount == 0) {
             PlayerMessageSender.sendErrorMessage(administer, FAIL_DISPLAY_ITEM.formatted(shopName, itemName));
             return false;
@@ -217,8 +220,7 @@ public class ShopCommand implements TabCompleter, CommandExecutor {
     }
 
     private boolean executeDeleteItemInShop(Player administer, String[] subCommand) {
-        int subCommandCount = subCommand.length;
-        if (subCommandCount != 3) {
+        if (!hasValidSubCommandLength(subCommand, 3)) {
             PlayerMessageSender.sendErrorMessage(administer, WRONG_COMMAND);
             return false;
         }
@@ -243,8 +245,7 @@ public class ShopCommand implements TabCompleter, CommandExecutor {
     }
 
     private boolean executeDisplayShopInfo(Player administer, String[] subCommand) {
-        int subCommandCount = subCommand.length;
-        if (subCommandCount != 2) {
+        if (!hasValidSubCommandLength(subCommand, 2)) {
             PlayerMessageSender.sendErrorMessage(administer, WRONG_COMMAND);
             return false;
         }
@@ -258,8 +259,7 @@ public class ShopCommand implements TabCompleter, CommandExecutor {
     }
 
     private boolean executeOpenShop(Player administer, String[] subCommand) {
-        int subCommandCount = subCommand.length;
-        if (subCommandCount != 2) {
+        if (!hasValidSubCommandLength(subCommand, 2)) {
             PlayerMessageSender.sendErrorMessage(administer, WRONG_COMMAND);
             return false;
         }
@@ -280,8 +280,7 @@ public class ShopCommand implements TabCompleter, CommandExecutor {
     }
 
     private boolean executeCloseShop(Player administer, String[] subCommand) {
-        int subCommandCount = subCommand.length;
-        if (subCommandCount != 2) {
+        if (hasValidSubCommandLength(subCommand, 2)) {
             PlayerMessageSender.sendErrorMessage(administer, WRONG_COMMAND);
             return false;
         }
@@ -385,7 +384,8 @@ public class ShopCommand implements TabCompleter, CommandExecutor {
         return shopRepository.updateShopState(shopName, ShopState.DELETE_STATE.getStateNumber());
     }
 
-    int displayShopItem(String shopName, String itemName, int slotNumber, int price, int maxBuyableCnt, int maxBuyableCntServer) {
+    int displayShopItem(String shopName, String itemName, int slotNumber, int price, int maxBuyableCnt,
+                        int maxBuyableCntServer) {
         ShopDto cashShop = shopRepository.selectShop(shopName);
         ItemDto item = itemRepository.selectItemByName(itemName);
         ShopItemDto shopItem = new ShopItemDto(
