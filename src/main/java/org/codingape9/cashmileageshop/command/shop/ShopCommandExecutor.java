@@ -215,6 +215,7 @@ public class ShopCommandExecutor extends ShopCommand implements CommandExecutor 
         List<String> closedShopNameList = getShopNameList(ShopState.UNOPEN_SHOP_STATE_LIST);
         if (!closedShopNameList.contains(shopName)) {
             PlayerMessageSender.sendErrorMessage(administer, UNDEFINED_SHOP + shopName);
+            return false;
         }
 
         int openShopCount = openShop(shopName);
