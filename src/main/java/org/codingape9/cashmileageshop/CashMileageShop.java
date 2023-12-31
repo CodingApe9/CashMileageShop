@@ -4,7 +4,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.codingape9.cashmileageshop.command.CashCommand;
 import org.codingape9.cashmileageshop.command.ItemRegisterCommand;
 import org.codingape9.cashmileageshop.command.MileageCommand;
-import org.codingape9.cashmileageshop.command.ShopCommand;
+import org.codingape9.cashmileageshop.command.shop.ShopCommandExecutor;
+import org.codingape9.cashmileageshop.command.shop.ShopTabCompleter;
 import org.codingape9.cashmileageshop.listener.CheckPlayerInDBListener;
 import org.codingape9.cashmileageshop.manager.MyBatisManager;
 import org.codingape9.cashmileageshop.manager.PropertyManager;
@@ -32,16 +33,26 @@ public final class CashMileageShop extends JavaPlugin {
         getCommand("아이템등록").setExecutor(new ItemRegisterCommand(new ItemRepository(MYBATIS_MANAGER)));
 
         getCommand("캐시").setExecutor(new CashCommand(new UserRepository(MYBATIS_MANAGER)));
-        getCommand("캐시샵").setExecutor(new ShopCommand(
+        getCommand("캐시샵").setExecutor(new ShopCommandExecutor(
+                new CashShopRepository(MYBATIS_MANAGER),
+                new CashItemRepository(MYBATIS_MANAGER),
+                new ItemRepository(MYBATIS_MANAGER)
+        ));
+        getCommand("캐시샵").setTabCompleter(new ShopTabCompleter(
                 new CashShopRepository(MYBATIS_MANAGER),
                 new CashItemRepository(MYBATIS_MANAGER),
                 new ItemRepository(MYBATIS_MANAGER)
         ));
 
         getCommand("마일리지").setExecutor(new MileageCommand(new UserRepository(MYBATIS_MANAGER)));
-        getCommand("마일리지샵").setExecutor(new ShopCommand(
-                new MileageShopRepository(MYBATIS_MANAGER),
-                new MileageItemRepository(MYBATIS_MANAGER),
+        getCommand("마일리지샵").setExecutor(new ShopCommandExecutor(
+                new CashShopRepository(MYBATIS_MANAGER),
+                new CashItemRepository(MYBATIS_MANAGER),
+                new ItemRepository(MYBATIS_MANAGER)
+        ));
+        getCommand("마일리지샵").setTabCompleter(new ShopTabCompleter(
+                new CashShopRepository(MYBATIS_MANAGER),
+                new CashItemRepository(MYBATIS_MANAGER),
                 new ItemRepository(MYBATIS_MANAGER)
         ));
 
