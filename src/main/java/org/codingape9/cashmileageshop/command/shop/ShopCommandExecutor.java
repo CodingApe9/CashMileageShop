@@ -138,12 +138,15 @@ public class ShopCommandExecutor implements CommandExecutor {
     }
 
     private boolean executePrintShopInfo(Player administer, String[] subCommand) {
+        String shopName = subCommand[1].replace("(닫힘)", "")
+                .replace("(오픈)", "")
+                .replace("(삭제됨)", "");
         List<String> shopNameList = shopService.getShopNameList(ShopState.ALL_STATE_LIST);
-        if (!shopCommandExecuteValidator.validatePrintShopInfoSubCommand(administer, subCommand, shopNameList)) {
+        if (!shopCommandExecuteValidator.validatePrintShopInfoSubCommand(administer, subCommand, shopName, shopNameList)) {
             return false;
         }
 
-        return shopService.printShopInfo(administer, subCommand[1]);
+        return shopService.printShopInfo(administer, shopName);
     }
 
     private boolean executeOpenShop(Player administer, String[] subCommand) {

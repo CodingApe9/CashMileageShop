@@ -74,11 +74,7 @@ public class ShopService {
         return true;
     }
 
-    public boolean printShopInfo(Player administer, String shopNameInfo) {
-        String shopName = shopNameInfo.replace("(닫힘)", "")
-                .replace("(오픈)", "")
-                .replace("(삭제됨)", "");
-
+    public boolean printShopInfo(Player administer, String shopName) {
         List<ShopItemDto> shopItemList = shopItemRepository.selectShopItemList(shopName);
         StringBuilder shopItemInfo = new StringBuilder();
         shopItemInfo.append(shopName).append("의 아이템 목록\n");

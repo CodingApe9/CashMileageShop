@@ -66,13 +66,13 @@ public class ShopCommandExecuteValidator {
         return true;
     }
 
-    public boolean validatePrintShopInfoSubCommand(Player administer, String[] subCommand, List<String> shopNameList) {
+    public boolean validatePrintShopInfoSubCommand(Player administer, String[] subCommand, String shopName, List<String> shopNameList) {
         if (!ShopCommandValidator.hasValidSubCommandLength(subCommand, 2)) {
             PlayerMessageSender.sendErrorMessage(administer, WRONG_COMMAND);
             return false;
         }
-        if (!shopNameList.contains(subCommand[1])) {
-            PlayerMessageSender.sendErrorMessage(administer, ShopMessageConstants.UNDEFINED_SHOP + subCommand[1]);
+        if (!shopNameList.contains(shopName)) {
+            PlayerMessageSender.sendErrorMessage(administer, ShopMessageConstants.UNDEFINED_SHOP + shopName);
             return false;
         }
         return true;
