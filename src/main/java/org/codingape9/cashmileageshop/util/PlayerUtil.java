@@ -1,8 +1,8 @@
 package org.codingape9.cashmileageshop.util;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.codingape9.cashmileageshop.CashMileageShop;
 import org.codingape9.cashmileageshop.dto.UserDto;
 import org.codingape9.cashmileageshop.repository.UserRepository;
 
@@ -22,6 +22,15 @@ public class PlayerUtil {
             return playerUUID;
         }
         return getOfflinePlayerUUID(playerName);
+    }
+
+    public static boolean hasAdminPrivileges(CommandSender sender) {
+        Player player = (Player) sender;
+        return player.isOp();
+    }
+
+    public static boolean hasAdminPrivileges(Player player) {
+        return player.isOp();
     }
 
     private static UUID getOnlinePlayerUUID(String playerName) {

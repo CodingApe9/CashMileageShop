@@ -10,6 +10,8 @@ import org.codingape9.cashmileageshop.listener.CheckPlayerInDBListener;
 import org.codingape9.cashmileageshop.manager.MyBatisManager;
 import org.codingape9.cashmileageshop.manager.PropertyManager;
 import org.codingape9.cashmileageshop.repository.*;
+import org.codingape9.cashmileageshop.service.ShopService;
+import org.codingape9.cashmileageshop.util.validator.ShopCommandExecuteValidator;
 import org.codingape9.cashmileageshop.view.ServerConsole;
 
 import java.io.File;
@@ -34,26 +36,36 @@ public final class CashMileageShop extends JavaPlugin {
 
         getCommand("캐시").setExecutor(new CashCommand(new UserRepository(MYBATIS_MANAGER)));
         getCommand("캐시샵").setExecutor(new ShopCommandExecutor(
-                new CashShopRepository(MYBATIS_MANAGER),
-                new CashItemRepository(MYBATIS_MANAGER),
-                new ItemRepository(MYBATIS_MANAGER)
+                new ShopService(
+                        new CashShopRepository(MYBATIS_MANAGER),
+                        new CashItemRepository(MYBATIS_MANAGER),
+                        new ItemRepository(MYBATIS_MANAGER)
+                ),
+                new ShopCommandExecuteValidator()
         ));
         getCommand("캐시샵").setTabCompleter(new ShopTabCompleter(
-                new CashShopRepository(MYBATIS_MANAGER),
-                new CashItemRepository(MYBATIS_MANAGER),
-                new ItemRepository(MYBATIS_MANAGER)
+                new ShopService(
+                        new CashShopRepository(MYBATIS_MANAGER),
+                        new CashItemRepository(MYBATIS_MANAGER),
+                        new ItemRepository(MYBATIS_MANAGER)
+                )
         ));
 
         getCommand("마일리지").setExecutor(new MileageCommand(new UserRepository(MYBATIS_MANAGER)));
         getCommand("마일리지샵").setExecutor(new ShopCommandExecutor(
-                new CashShopRepository(MYBATIS_MANAGER),
-                new CashItemRepository(MYBATIS_MANAGER),
-                new ItemRepository(MYBATIS_MANAGER)
+                new ShopService(
+                        new MileageShopRepository(MYBATIS_MANAGER),
+                        new MileageItemRepository(MYBATIS_MANAGER),
+                        new ItemRepository(MYBATIS_MANAGER)
+                ),
+                new ShopCommandExecuteValidator()
         ));
         getCommand("마일리지샵").setTabCompleter(new ShopTabCompleter(
-                new CashShopRepository(MYBATIS_MANAGER),
-                new CashItemRepository(MYBATIS_MANAGER),
-                new ItemRepository(MYBATIS_MANAGER)
+                new ShopService(
+                        new MileageShopRepository(MYBATIS_MANAGER),
+                        new MileageItemRepository(MYBATIS_MANAGER),
+                        new ItemRepository(MYBATIS_MANAGER)
+                )
         ));
 
         getServer().getPluginManager().registerEvents(new CheckPlayerInDBListener(new UserRepository(MYBATIS_MANAGER)), this);

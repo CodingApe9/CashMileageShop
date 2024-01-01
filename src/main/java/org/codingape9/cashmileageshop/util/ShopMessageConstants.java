@@ -3,7 +3,6 @@ package org.codingape9.cashmileageshop.util;
 public enum ShopMessageConstants {
     WRONG_COMMAND("명령어를 잘못 입력했습니다."),
     EXISTING_SHOP("이미 존재하는 상점입니다. 상점 이름: "),
-    UNDELETEABLE_SHOP("존재하지 않는 상점입니다. 상점 이름: "),
     UNDEFINED_SHOP("상점을 찾을 수 없습니다. 상점 이름: "),
     UNEXISTING_ITEM("존재하지 않는 아이템입니다. 아이템 이름: "),
     SUCCESS_INSERT_SHOP("상점을 생성했습니다. 상점 이름: "),

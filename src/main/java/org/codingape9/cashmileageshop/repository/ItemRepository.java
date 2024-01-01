@@ -41,7 +41,7 @@ public class ItemRepository {
         return itemDtoList;
     }
 
-    public ItemDto selectItemByName(String itemName) {
+    public ItemDto selectItem(String itemName) {
         ItemDto itemDto;
 
         try (SqlSession session = sqlSessionFactory.getSession()) {
