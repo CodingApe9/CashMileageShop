@@ -8,7 +8,7 @@ import org.codingape9.cashmileageshop.repository.ShopItemRepository;
 import org.codingape9.cashmileageshop.repository.ShopRepository;
 import org.codingape9.cashmileageshop.state.ShopState;
 
-public abstract class ShopCommand {
+public class ShopCommand {
 
     protected final ShopRepository shopRepository;
     protected final ShopItemRepository shopItemRepository;
